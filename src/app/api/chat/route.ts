@@ -67,19 +67,15 @@ export async function POST(request: NextRequest) {
     
     console.log(`[💬 Chat API] 消息数量：${messages.length}`)
 
-    // 调用通义千问 API（标准格式）
-    const apiUrl = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation'
+    // 调用阿里云百炼 API（DashScope 兼容模式）
+    const apiUrl = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
     console.log(`[💬 Chat API] 请求 URL: ${apiUrl}`)
     
     const requestBody = {
       model: 'qwen-plus',
-      input: {
-        messages: messages,
-      },
-      parameters: {
-        max_tokens: 500,
-        temperature: 0.7,
-      },
+      messages: messages,
+      max_tokens: 500,
+      temperature: 0.7,
     }
     
     console.log(`[💬 Chat API] 请求体：${JSON.stringify(requestBody).substring(0, 200)}...`)
@@ -106,8 +102,8 @@ export async function POST(request: NextRequest) {
 
     const data = JSON.parse(responseText)
     
-    // 通义千问标准格式返回结构
-    const reply = data.output?.text || data.output?.choices?.[0]?.message?.content
+    // DashScope 兼容模式返回结构（OpenAI 兼容格式）
+    const reply = data.choices?.[0]?.message?.content || data.output?.text
     
     if (!reply) {
       console.warn(`[💬 Chat API] ⚠️ 返回数据中没有找到回复内容`)
