@@ -1,7 +1,13 @@
 {
   "buildCommand": "npm run build",
   "devCommand": "npm run dev",
-  "installCommand": "npm install",
+  "installCommand": "npm ci --only=production",
   "framework": "nextjs",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "regions": ["hnd1"],
+  "functions": {
+    "src/app/api/chat/route.ts": {
+      "maxDuration": 30
+    }
+  }
 }
