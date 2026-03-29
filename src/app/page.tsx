@@ -230,50 +230,71 @@ export default function Home() {
       {/* 输入区域 */}
       <div className="sticky bottom-0 bg-white/80 backdrop-blur-md border-t border-gray-100">
         <div className="max-w-3xl mx-auto px-4 py-4">
+          {/* 语音模式提示 */}
+          {isVoiceMode && (
+            <div className="mb-2 text-center">
+              <p className={`text-sm ${isRecording ? 'text-red-500 font-medium' : 'text-gray-500'}`}>
+                {isRecording ? '🔴 正在录音... 说完松开' : '🎤 点击按钮开始说话'}
+              </p>
+            </div>
+          )}
+
           <div className="flex items-end space-x-3">
             {/* 语音按钮 */}
             {isVoiceMode && (
               <button
                 onClick={toggleRecording}
-                className={`p-3 rounded-full transition-all ${
+                className={`flex-shrink-0 w-12 h-12 rounded-full transition-all flex items-center justify-center text-xl ${
                   isRecording
-                    ? 'bg-red-500 text-white animate-pulse'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-300'
+                    : 'bg-gradient-to-br from-primary to-secondary text-white shadow-md hover:shadow-lg'
                 }`}
+                title={isRecording ? '停止录音' : '开始录音'}
               >
-                {isRecording ? '🔴' : '🎤'}
+                {isRecording ? '⏹' : '🎤'}
               </button>
             )}
 
             {/* 输入框 */}
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder={isVoiceMode ? "按住说话，或直接输入..." : "输入你想说的..."}
-              className="flex-1 resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus"
-              rows={1}
-              style={{ minHeight: '44px', maxHeight: '120px' }}
-            />
+            <div className="flex-1 relative">
+              <textarea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder={isVoiceMode ? "说完松开按钮..." : "输入你想说的..."}
+                className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus bg-white/50 backdrop-blur-sm"
+                rows={1}
+                style={{ minHeight: '48px', maxHeight: '160px' }}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement
+                  target.style.height = 'auto'
+                  target.style.height = Math.min(target.scrollHeight, 160) + 'px'
+                }}
+              />
+            </div>
 
             {/* 发送按钮 */}
             <button
               onClick={sendMessage}
               disabled={!input.trim() || isLoading}
-              className={`p-3 rounded-full transition-all ${
+              className={`flex-shrink-0 w-12 h-12 rounded-full transition-all flex items-center justify-center ${
                 input.trim() && !isLoading
-                  ? 'bg-primary text-white hover:bg-primary/80'
-                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  ? 'bg-gradient-to-br from-primary to-secondary text-white shadow-md hover:shadow-lg'
+                  : 'bg-gray-100 text-gray-300 cursor-not-allowed'
               }`}
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+              )}
             </button>
           </div>
 
           {/* 提示信息 */}
-          <p className="text-xs text-gray-400 text-center mt-2">
+          <p className="text-xs text-gray-400 text-center mt-3">
             小雨在这里陪着你，想说什么都可以 🌧
           </p>
         </div>
