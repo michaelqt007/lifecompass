@@ -85,7 +85,7 @@ export default function Home() {
         body: JSON.stringify({
           message: userMessage.content,
           conversationHistory: messages.map((m) => ({
-            role: m.role,
+            role: m.role === 'xiaoyu' ? 'assistant' : m.role,
             content: m.content,
           })),
         }),
