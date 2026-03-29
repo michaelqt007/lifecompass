@@ -9,7 +9,7 @@
 ### 1.1 创建 GitHub 仓库
 
 1. 打开 https://github.com/new
-2. 仓库名：`lifecompass-web`
+2. 仓库名：`lifecompass`
 3. 选择 **Private**（私有）或 **Public**（公开）
 4. 点击 **Create repository**
 
@@ -30,7 +30,7 @@ git add .
 git commit -m "Initial commit - LifeCompass MVP"
 
 # 关联 GitHub 仓库（替换为你的用户名）
-git remote add origin https://github.com/你的用户名/lifecompass-web.git
+git remote add origin https://github.com/你的用户名/lifecompass.git
 
 # 推送到 GitHub
 git branch -M main
