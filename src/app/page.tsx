@@ -35,40 +35,49 @@ export default function Home() {
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (SpeechRecognition) {
-      recognitionRef.current = new SpeechRecognition()
-      recognitionRef.current.continuous = false
-      recognitionRef.current.interimResults = true
-      recognitionRef.current.lang = 'zh-CN'
+      try {
+        recognitionRef.current = new SpeechRecognition()
+        recognitionRef.current.continuous = false
+        recognitionRef.current.interimResults = true
+        recognitionRef.current.lang = 'zh-CN'
 
-      recognitionRef.current.onstart = () => {
-        console.log('语音识别开始')
-        setIsRecording(true)
-      }
-
-      recognitionRef.current.onresult = (event: any) => {
-        const transcript = Array.from(event.results)
-          .map((result: any) => result[0])
-          .map((result) => result.transcript)
-          .join('')
-        
-        console.log('语音识别结果:', transcript)
-        setInput(transcript)
-      }
-
-      recognitionRef.current.onend = () => {
-        console.log('语音识别结束')
-        setIsRecording(false)
-      }
-
-      recognitionRef.current.onerror = (event: any) => {
-        console.error('语音识别错误:', event.error)
-        setIsRecording(false)
-        // Android 常见错误处理
-        if (event.error === 'not-allowed') {
-          alert('需要麦克风权限才能语音输入，请在浏览器设置中允许麦克风访问')
-        } else if (event.error === 'no-speech') {
-          console.log('没有检测到语音，请重试')
+        recognitionRef.current.onstart = () => {
+          console.log('语音识别开始')
+          setIsRecording(true)
         }
+
+        recognitionRef.current.onresult = (event: any) => {
+          console.log('语音识别事件:', event)
+          const transcript = Array.from(event.results)
+            .map((result: any) => result[0])
+            .map((result) => result.transcript)
+            .join('')
+          
+          console.log('语音识别结果:', transcript)
+          if (transcript) {
+            setInput(transcript)
+          }
+        }
+
+        recognitionRef.current.onend = () => {
+          console.log('语音识别结束')
+          setIsRecording(false)
+        }
+
+        recognitionRef.current.onerror = (event: any) => {
+          console.error('语音识别错误:', event.error)
+          setIsRecording(false)
+          // Android 常见错误处理
+          if (event.error === 'not-allowed') {
+            alert('需要麦克风权限才能语音输入，请在浏览器设置中允许麦克风访问')
+          } else if (event.error === 'no-speech') {
+            console.log('没有检测到语音，请重试')
+          } else if (event.error === 'audio-capture') {
+            alert('无法访问麦克风，请检查设备权限')
+          }
+        }
+      } catch (err) {
+        console.error('初始化语音识别失败:', err)
       }
     }
   }, [])
@@ -160,9 +169,26 @@ export default function Home() {
       recognitionRef.current?.stop()
       setIsRecording(false)
     } else {
-      recognitionRef.current?.start()
-      setIsRecording(true)
-      setInput('') // 清空输入框
+      // Android 上需要先 stop 再 start，重置状态
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop()
+        } catch (err) {
+          // 忽略错误
+        }
+        setTimeout(() => {
+          try {
+            recognitionRef.current?.start()
+            setIsRecording(true)
+            setInput('') // 清空输入框
+          } catch (err) {
+            console.error('启动语音识别失败:', err)
+            alert('语音识别启动失败，请刷新页面重试')
+          }
+        }, 100)
+      } else {
+        alert('您的浏览器不支持语音输入，请使用文字输入')
+      }
     }
   }
 
@@ -272,7 +298,7 @@ export default function Home() {
             )}
 
             {/* 输入框 */}
-            <div className="flex-1 min-w-0 relative">
+            <div className="flex-grow min-w-[200px] max-w-[calc(100%-140px)] relative">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
