@@ -58,9 +58,9 @@ export async function POST(request: NextRequest) {
     console.log(`[💬 Chat API] API Key 是否存在：${!!process.env.DASHSCOPE_API_KEY}`)
     console.log(`[💬 Chat API] API Key 前缀：${process.env.DASHSCOPE_API_KEY?.substring(0, 10)}...`)
 
-    // 构建完整的对话历史（阿里云百炼格式）
+    // 构建完整的对话历史
     const messages = [
-      { role: 'assistant', content: XIAOYU_SYSTEM_PROMPT },
+      { role: 'system', content: XIAOYU_SYSTEM_PROMPT },
       ...conversationHistory.slice(-10),
       { role: 'user', content: message },
     ]
