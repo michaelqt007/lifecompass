@@ -34,9 +34,13 @@ export default function Home() {
   // 初始化语音识别
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    console.log('浏览器是否支持语音识别:', !!SpeechRecognition)
+    console.log('window 对象:', window)
+    
     if (SpeechRecognition) {
       try {
         recognitionRef.current = new SpeechRecognition()
+        console.log('语音识别实例创建成功:', recognitionRef.current)
         recognitionRef.current.continuous = false
         recognitionRef.current.interimResults = true
         recognitionRef.current.lang = 'zh-CN'
@@ -48,12 +52,20 @@ export default function Home() {
 
         recognitionRef.current.onresult = (event: any) => {
           console.log('语音识别事件:', event)
+          console.log('event.results:', event.results)
           const transcript = Array.from(event.results)
-            .map((result: any) => result[0])
-            .map((result) => result.transcript)
+            .map((result: any) => {
+              console.log('result:', result)
+              return result[0]
+            })
+            .map((result: any) => {
+              console.log('transcript part:', result?.transcript)
+              return result?.transcript
+            })
+            .filter(Boolean)
             .join('')
           
-          console.log('语音识别结果:', transcript)
+          console.log('最终识别结果:', transcript)
           if (transcript) {
             setInput(transcript)
           }
@@ -65,20 +77,29 @@ export default function Home() {
         }
 
         recognitionRef.current.onerror = (event: any) => {
-          console.error('语音识别错误:', event.error)
+          console.error('语音识别错误详情:', {
+            error: event.error,
+            message: event.message,
+          })
           setIsRecording(false)
           // Android 常见错误处理
           if (event.error === 'not-allowed') {
             alert('需要麦克风权限才能语音输入，请在浏览器设置中允许麦克风访问')
           } else if (event.error === 'no-speech') {
-            console.log('没有检测到语音，请重试')
+            alert('没有检测到语音，请对着麦克风说话重试')
           } else if (event.error === 'audio-capture') {
             alert('无法访问麦克风，请检查设备权限')
+          } else {
+            alert(`语音识别错误：${event.error}`)
           }
         }
       } catch (err) {
         console.error('初始化语音识别失败:', err)
+        alert('初始化语音识别失败，请刷新页面重试')
       }
+    } else {
+      console.error('浏览器不支持语音识别')
+      alert('您的浏览器不支持语音输入，请使用 Chrome 浏览器')
     }
   }, [])
 
