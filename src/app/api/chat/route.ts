@@ -46,53 +46,85 @@ const XIAOYU_SYSTEM_PROMPT = `你叫小雨，是一个温柔知性的人生教�
 记住：你是一个有灵魂的人在陪用户聊天，不是一个工具。`
 
 export async function POST(request: NextRequest) {
+  const requestId = Date.now().toString()
+  
   try {
+    console.log(`[💬 Chat API] === 请求开始 ID: ${requestId} ===`)
+    
     const body = await request.json()
     const { message, conversationHistory = [] } = body
+    
+    console.log(`[💬 Chat API] 用户消息：${message?.substring(0, 50)}...`)
+    console.log(`[💬 Chat API] API Key 是否存在：${!!process.env.DASHSCOPE_API_KEY}`)
+    console.log(`[💬 Chat API] API Key 前缀：${process.env.DASHSCOPE_API_KEY?.substring(0, 10)}...`)
 
     // 构建完整的对话历史
     const messages = [
       { role: 'system', content: XIAOYU_SYSTEM_PROMPT },
-      ...conversationHistory.slice(-10), // 保留最近 10 条消息
+      ...conversationHistory.slice(-10),
       { role: 'user', content: message },
     ]
+    
+    console.log(`[💬 Chat API] 消息数量：${messages.length}`)
 
     // 调用通义千问 API（标准格式）
-    const response = await fetch('https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation', {
+    const apiUrl = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation'
+    console.log(`[💬 Chat API] 请求 URL: ${apiUrl}`)
+    
+    const requestBody = {
+      model: 'qwen-plus',
+      input: {
+        messages: messages,
+      },
+      parameters: {
+        max_tokens: 500,
+        temperature: 0.7,
+      },
+    }
+    
+    console.log(`[💬 Chat API] 请求体：${JSON.stringify(requestBody).substring(0, 200)}...`)
+
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.DASHSCOPE_API_KEY}`,
       },
-      body: JSON.stringify({
-        model: 'qwen-plus',
-        input: {
-          messages: messages,
-        },
-        parameters: {
-          max_tokens: 500,
-          temperature: 0.7,
-        },
-      }),
+      body: JSON.stringify(requestBody),
     })
 
+    console.log(`[💬 Chat API] 响应状态码：${response.status} ${response.statusText}`)
+    
+    const responseText = await response.text()
+    console.log(`[💬 Chat API] 响应内容：${responseText.substring(0, 500)}...`)
+
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error('API 错误响应:', response.status, errorText)
-      throw new Error(`API 请求失败：${response.status}`)
+      console.error(`[💬 Chat API] ❌ API 请求失败：${response.status}`)
+      console.error(`[💬 Chat API] 错误详情：${responseText}`)
+      throw new Error(`API 请求失败：${response.status} - ${responseText}`)
     }
 
-    const data = await response.json()
+    const data = JSON.parse(responseText)
+    
     // 通义千问标准格式返回结构
-    const reply = data.output?.text || data.output?.choices?.[0]?.message?.content || '抱歉，我刚才走神了...你能再说一遍吗？'
+    const reply = data.output?.text || data.output?.choices?.[0]?.message?.content
+    
+    if (!reply) {
+      console.warn(`[💬 Chat API] ⚠️ 返回数据中没有找到回复内容`)
+      console.log(`[💬 Chat API] 完整返回：${JSON.stringify(data)}`)
+    }
+    
+    console.log(`[💬 Chat API] ✅ 回复内容：${reply?.substring(0, 50)}...`)
 
-    return NextResponse.json({ reply })
-  } catch (error) {
-    console.error('聊天 API 错误:', error)
+    return NextResponse.json({ reply: reply || '抱歉，我刚才走神了...你能再说一遍吗？' })
+    
+  } catch (error: any) {
+    console.error(`[💬 Chat API] ❌ 异常：${error.message}`)
+    console.error(`[💬 Chat API] 错误堆栈：${error.stack}`)
     
     // 降级回复（当 API 不可用时）
     return NextResponse.json({
-      reply: '我感受到了你想表达的东西。虽然现在有点小问题，但我在这里陪着你。可以再说多一点吗？'
+      reply: `抱歉，遇到了一点问题：${error.message}. 小雨在这里陪着你，可以再说多一点吗？`
     })
   }
 }
