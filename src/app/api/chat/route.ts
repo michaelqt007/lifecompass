@@ -58,34 +58,15 @@ export async function POST(request: NextRequest) {
     console.log(`[💬 Chat API] API Key 是否存在：${!!process.env.DASHSCOPE_API_KEY}`)
     console.log(`[💬 Chat API] API Key 前缀：${process.env.DASHSCOPE_API_KEY?.substring(0, 10)}...`)
 
-    // 构建对话历史
+    // 构建对话历史（前端传来的 history）
     const history = conversationHistory.slice(-10).map((m: any) => ({
       role: m.role === 'xiaoyu' ? 'assistant' : m.role,
       content: m.content,
     }))
     
-    // 如果没有历史，添加小雨的人设和自我介绍
-    if (history.length === 0) {
-      history.unshift({
-        role: 'assistant',
-        content: `你好呀，我是小雨～ 
-
-我是一个温柔知性的人生教练，像朋友一样陪着你探索人生方向。
-
-我可以帮你：
-- 梳理人生方向，找到内心的答案
-- 面对选择时，帮你厘清思路
-- 情绪低落时，给你理解和陪伴
-- 想要改变时，陪你迈出一小步
-
-我不会评判你，不会说教，也不会给标准答案。
-我只是在这里，听你说，陪你慢慢变清晰。
-
-今天想聊点什么呢？ 🌧`,
-      })
-    }
-    
+    // 构建完整消息：system + history + user
     const messages = [
+      { role: 'system', content: XIAOYU_SYSTEM_PROMPT },
       ...history,
       { role: 'user', content: message },
     ]
