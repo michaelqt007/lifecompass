@@ -33,12 +33,17 @@ export default function Home() {
 
   // 初始化语音识别
   useEffect(() => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (SpeechRecognition) {
       recognitionRef.current = new SpeechRecognition()
       recognitionRef.current.continuous = false
       recognitionRef.current.interimResults = true
       recognitionRef.current.lang = 'zh-CN'
+
+      recognitionRef.current.onstart = () => {
+        console.log('语音识别开始')
+        setIsRecording(true)
+      }
 
       recognitionRef.current.onresult = (event: any) => {
         const transcript = Array.from(event.results)
@@ -46,16 +51,24 @@ export default function Home() {
           .map((result) => result.transcript)
           .join('')
         
+        console.log('语音识别结果:', transcript)
         setInput(transcript)
       }
 
       recognitionRef.current.onend = () => {
+        console.log('语音识别结束')
         setIsRecording(false)
       }
 
       recognitionRef.current.onerror = (event: any) => {
         console.error('语音识别错误:', event.error)
         setIsRecording(false)
+        // Android 常见错误处理
+        if (event.error === 'not-allowed') {
+          alert('需要麦克风权限才能语音输入，请在浏览器设置中允许麦克风访问')
+        } else if (event.error === 'no-speech') {
+          console.log('没有检测到语音，请重试')
+        }
       }
     }
   }, [])
@@ -256,13 +269,13 @@ export default function Home() {
             )}
 
             {/* 输入框 */}
-            <div className="flex-1 relative">
+            <div className="flex-1 min-w-0 relative">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder={isVoiceMode ? "说完松开按钮..." : "输入你想说的..."}
-                className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus bg-white/50 backdrop-blur-sm"
+                className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus bg-white/50 backdrop-blur-sm transition-all"
                 rows={1}
                 style={{ minHeight: '48px', maxHeight: '160px' }}
                 onInput={(e) => {
