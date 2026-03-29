@@ -58,12 +58,22 @@ export async function POST(request: NextRequest) {
     console.log(`[💬 Chat API] API Key 是否存在：${!!process.env.DASHSCOPE_API_KEY}`)
     console.log(`[💬 Chat API] API Key 前缀：${process.env.DASHSCOPE_API_KEY?.substring(0, 10)}...`)
 
-    // 构建完整的对话历史
+    // 构建对话历史（移除 system，避免角色不支持）
     const messages = [
-      { role: 'system', content: XIAOYU_SYSTEM_PROMPT },
-      ...conversationHistory.slice(-10),
+      ...conversationHistory.slice(-10).map((m: any) => ({
+        role: m.role === 'xiaoyu' ? 'assistant' : m.role,
+        content: m.content,
+      })),
       { role: 'user', content: message },
     ]
+    
+    // 如果没有历史，添加小雨的自我介绍
+    if (messages.length === 1) {
+      messages.unshift({
+        role: 'assistant',
+        content: '你好，我是小雨，一个温柔知性的人生教练。我在这里陪着你，想说什么都可以。',
+      })
+    }
     
     console.log(`[💬 Chat API] 消息数量：${messages.length}`)
 
