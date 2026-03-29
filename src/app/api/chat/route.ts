@@ -67,8 +67,8 @@ export async function POST(request: NextRequest) {
     
     console.log(`[💬 Chat API] 消息数量：${messages.length}`)
 
-    // 调用阿里云百炼 API（DashScope）
-    const apiUrl = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
+    // 调用阿里云百炼 API（Coding Plan 专属地址）
+    const apiUrl = 'https://coding.dashscope.aliyuncs.com/v1/chat/completions'
     console.log(`[💬 Chat API] 请求 URL: ${apiUrl}`)
     
     // 使用 qwen-plus 模型
