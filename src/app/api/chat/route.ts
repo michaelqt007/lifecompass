@@ -67,12 +67,13 @@ export async function POST(request: NextRequest) {
     
     console.log(`[💬 Chat API] 消息数量：${messages.length}`)
 
-    // 调用阿里云百炼 API（DashScope 兼容模式）
+    // 调用阿里云百炼 API（DashScope）
     const apiUrl = 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
     console.log(`[💬 Chat API] 请求 URL: ${apiUrl}`)
     
+    // 尝试使用 qwen-turbo（更稳定）
     const requestBody = {
-      model: 'qwen-plus',
+      model: 'qwen-turbo',
       messages: messages,
       max_tokens: 500,
       temperature: 0.7,
