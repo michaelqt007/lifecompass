@@ -57,8 +57,8 @@ export async function POST(request: NextRequest) {
       { role: 'user', content: message },
     ]
 
-    // 调用通义千问 API
-    const response = await fetch('https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions', {
+    // 调用通义千问 API（标准格式）
+    const response = await fetch('https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,18 +66,25 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         model: 'qwen-plus',
-        messages: messages,
-        max_tokens: 500,
-        temperature: 0.7,
+        input: {
+          messages: messages,
+        },
+        parameters: {
+          max_tokens: 500,
+          temperature: 0.7,
+        },
       }),
     })
 
     if (!response.ok) {
+      const errorText = await response.text()
+      console.error('API 错误响应:', response.status, errorText)
       throw new Error(`API 请求失败：${response.status}`)
     }
 
     const data = await response.json()
-    const reply = data.choices[0]?.message?.content || '抱歉，我刚才走神了...你能再说一遍吗？'
+    // 通义千问标准格式返回结构
+    const reply = data.output?.text || data.output?.choices?.[0]?.message?.content || '抱歉，我刚才走神了...你能再说一遍吗？'
 
     return NextResponse.json({ reply })
   } catch (error) {
