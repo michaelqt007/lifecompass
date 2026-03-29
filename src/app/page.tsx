@@ -185,11 +185,25 @@ export default function Home() {
   }
 
   // 开始/停止录音
-  const toggleRecording = () => {
+  const toggleRecording = async () => {
     if (isRecording) {
       recognitionRef.current?.stop()
       setIsRecording(false)
     } else {
+      // 先检查麦克风权限
+      try {
+        if (navigator.permissions) {
+          const permissionStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName })
+          console.log('麦克风权限状态:', permissionStatus.state)
+          if (permissionStatus.state === 'denied') {
+            alert('麦克风权限被拒绝，请在浏览器设置中允许麦克风访问')
+            return
+          }
+        }
+      } catch (err) {
+        console.log('无法检查麦克风权限，继续尝试')
+      }
+
       // Android 上需要先 stop 再 start，重置状态
       if (recognitionRef.current) {
         try {
@@ -197,16 +211,58 @@ export default function Home() {
         } catch (err) {
           // 忽略错误
         }
+        
+        // 重置实例
+        try {
+          const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+          recognitionRef.current = new SpeechRecognition()
+          recognitionRef.current.continuous = false
+          recognitionRef.current.interimResults = true
+          recognitionRef.current.lang = 'zh-CN'
+          
+          // 重新绑定事件
+          recognitionRef.current.onstart = () => {
+            console.log('语音识别开始')
+            setIsRecording(true)
+          }
+          recognitionRef.current.onresult = (event: any) => {
+            const transcript = Array.from(event.results)
+              .map((result: any) => result[0])
+              .map((result) => result.transcript)
+              .filter(Boolean)
+              .join('')
+            if (transcript) {
+              setInput(transcript)
+            }
+          }
+          recognitionRef.current.onend = () => {
+            setIsRecording(false)
+          }
+          recognitionRef.current.onerror = (event: any) => {
+            console.error('语音识别错误:', event.error)
+            setIsRecording(false)
+          }
+        } catch (err) {
+          console.error('重置语音识别失败:', err)
+        }
+        
         setTimeout(() => {
           try {
             recognitionRef.current?.start()
             setIsRecording(true)
             setInput('') // 清空输入框
-          } catch (err) {
+            console.log('语音识别启动成功')
+          } catch (err: any) {
             console.error('启动语音识别失败:', err)
-            alert('语音识别启动失败，请刷新页面重试')
+            let msg = '语音识别启动失败'
+            if (err.name === 'NotAllowedError') {
+              msg = '需要麦克风权限，请在浏览器设置中允许'
+            } else if (err.name === 'InvalidStateError') {
+              msg = '语音识别状态异常，请刷新页面重试'
+            }
+            alert(msg)
           }
-        }, 100)
+        }, 200)
       } else {
         alert('您的浏览器不支持语音输入，请使用文字输入')
       }
