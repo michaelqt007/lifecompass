@@ -71,9 +71,9 @@ export async function POST(request: NextRequest) {
     const apiUrl = 'https://coding.dashscope.aliyuncs.com/v1/chat/completions'
     console.log(`[💬 Chat API] 请求 URL: ${apiUrl}`)
     
-    // 使用 qwen-plus 模型
+    // 使用 qwen-turbo 模型（Coding Plan 支持）
     const requestBody = {
-      model: 'qwen-plus',
+      model: 'qwen-turbo',
       messages: messages,
       max_tokens: 500,
       temperature: 0.7,
