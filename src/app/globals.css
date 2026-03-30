@@ -40,7 +40,7 @@ body {
 }
 
 .message-user > p {
-  @apply bg-primary text-white rounded-2xl rounded-tr-sm px-4 py-3 inline-block;
+  @apply bg-primary text-white rounded-2xl rounded-tr-sm px-4 py-3 inline-block text-right;
   max-width: 80%;
 }
 
@@ -50,7 +50,7 @@ body {
 }
 
 .message-xiaoyu > p {
-  @apply bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 inline-block;
+  @apply bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 inline-block text-left;
   max-width: 80%;
 }
 
