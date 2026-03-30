@@ -375,7 +375,7 @@ export default function Home() {
             )}
 
             {/* 输入框 */}
-            <div className="flex-grow min-w-[200px] max-w-[calc(100%-140px)] relative">
+            <div className="flex-grow relative">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -383,7 +383,11 @@ export default function Home() {
                 placeholder={isVoiceMode ? "说完松开按钮..." : "输入你想说的..."}
                 className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus bg-white/50 backdrop-blur-sm transition-all"
                 rows={1}
-                style={{ minHeight: '48px', maxHeight: '160px' }}
+                style={{ 
+                  minHeight: '48px', 
+                  maxHeight: '160px',
+                  width: 'auto',
+                }}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement
                   target.style.height = 'auto'
