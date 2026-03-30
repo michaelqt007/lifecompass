@@ -35,11 +35,13 @@ body {
 
 /* 对话气泡 */
 .message-user {
-  @apply bg-primary text-white rounded-2xl rounded-tr-sm px-4 py-3 max-w-[80%] ml-auto;
+  @apply bg-primary text-white rounded-2xl rounded-tr-sm px-4 py-3 ml-auto inline-block;
+  max-width: 80%;
 }
 
 .message-xiaoyu {
-  @apply bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[80%] mr-auto;
+  @apply bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 mr-auto inline-block;
+  max-width: 80%;
 }
 
 /* 输入框聚焦效果 */
