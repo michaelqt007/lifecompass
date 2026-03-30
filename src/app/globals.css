@@ -35,12 +35,22 @@ body {
 
 /* 对话气泡 */
 .message-user {
-  @apply bg-primary text-white rounded-2xl rounded-tr-sm px-4 py-3 ml-auto inline-block;
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
+.message-user > p {
+  @apply bg-primary text-white rounded-2xl rounded-tr-sm px-4 py-3 inline-block;
   max-width: 80%;
 }
 
 .message-xiaoyu {
-  @apply bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 mr-auto inline-block;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.message-xiaoyu > p {
+  @apply bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 inline-block;
   max-width: 80%;
 }
 
