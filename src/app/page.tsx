@@ -351,9 +351,9 @@ export default function Home() {
         <div className="max-w-3xl mx-auto px-4 py-4">
           {/* 语音模式提示 */}
           {isVoiceMode && (
-            <div className="mb-2 text-center">
+            <div className="mb-2 text-center h-5">
               <p className={`text-sm ${isRecording ? 'text-red-500 font-medium' : 'text-gray-500'}`}>
-                {isRecording ? '🔴 正在录音... 说完松开' : '🎤 点击按钮开始说话'}
+                {isRecording ? '🔴 正在录音... 说完松开' : '点击按钮开始说话'}
               </p>
             </div>
           )}
@@ -375,7 +375,7 @@ export default function Home() {
             )}
 
             {/* 输入框 */}
-            <div className="flex-grow relative">
+            <div className="flex-1 min-w-0 relative">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -386,7 +386,6 @@ export default function Home() {
                 style={{ 
                   minHeight: '48px', 
                   maxHeight: '160px',
-                  width: 'auto',
                 }}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement
