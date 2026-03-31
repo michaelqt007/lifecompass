@@ -19,6 +19,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
   const [isVoiceMode, setIsVoiceMode] = useState(true)
+
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const recognitionRef = useRef<any>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -51,22 +52,25 @@ export default function Home() {
     }
 
     recognition.onresult = (event: any) => {
-      const transcript = Array.from(event.results)
-        .map((result: any) => result[0])
-        .map((result: any) => result?.transcript || '')
-        .join('')
-        .trim()
+      let text = ''
 
+      for (let i = event.resultIndex || 0; i < event.results.length; i++) {
+        const result = event.results[i]
+        if (!result || !result[0]) continue
+        text += result[0].transcript || ''
+      }
+
+      const transcript = text.trim()
       if (!transcript) return
 
       setInput(transcript)
 
       requestAnimationFrame(() => {
-        if (textareaRef.current) {
-          textareaRef.current.value = transcript
-          autoResizeTextarea()
-          textareaRef.current.focus()
-        }
+        const el = textareaRef.current
+        if (!el) return
+        el.value = transcript
+        autoResizeTextarea()
+        el.focus()
       })
     }
 
@@ -76,19 +80,21 @@ export default function Home() {
 
     recognition.onerror = (event: any) => {
       setIsRecording(false)
-
       if (event?.error === 'not-allowed') {
         alert('需要麦克风权限，请在浏览器设置中允许')
       } else if (event?.error === 'audio-capture') {
         alert('无法访问麦克风，请检查设备权限')
       } else if (event?.error === 'no-speech') {
         alert('没有检测到语音，请重试')
+      } else {
+        alert(`语音识别错误：${event?.error || 'unknown'}`)
       }
     }
   }
 
   useEffect(() => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+
     if (!SpeechRecognition) return
 
     try {
@@ -171,7 +177,9 @@ export default function Home() {
 
     try {
       if (navigator.permissions) {
-        const permissionStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName })
+        const permissionStatus = await navigator.permissions.query({
+          name: 'microphone' as PermissionName,
+        })
         if (permissionStatus.state === 'denied') {
           alert('麦克风权限被拒绝，请在浏览器设置中允许麦克风访问')
           return
