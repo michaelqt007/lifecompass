@@ -42,6 +42,9 @@ body {
 .message-user > p {
   @apply bg-primary text-white rounded-2xl rounded-tr-sm px-4 py-3 inline-block text-left;
   max-width: 80%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .message-xiaoyu {

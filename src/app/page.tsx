@@ -21,6 +21,7 @@ export default function Home() {
   const [isVoiceMode, setIsVoiceMode] = useState(true)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const recognitionRef = useRef<any>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   // 滚动到底部
   const scrollToBottom = () => {
@@ -104,6 +105,12 @@ export default function Home() {
   }, [])
 
   // 发送消息
+  const resetTextareaHeight = () => {
+    if (!textareaRef.current) return
+    textareaRef.current.style.height = '48px'
+    textareaRef.current.scrollTop = 0
+  }
+
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return
 
@@ -116,6 +123,10 @@ export default function Home() {
 
     setMessages((prev) => [...prev, userMessage])
     setInput('')
+    if (textareaRef.current) {
+      textareaRef.current.style.height = '48px'
+      textareaRef.current.scrollTop = 0
+    }
     setIsLoading(true)
 
     try {
@@ -388,12 +399,16 @@ export default function Home() {
                   maxHeight: '160px',
                   overflowY: 'auto',
                   boxSizing: 'border-box',
+                  whiteSpace: 'pre-wrap',
+                  overflowWrap: 'anywhere',
+                  wordBreak: 'break-word',
                 }}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement
                   target.style.height = '48px'
                   target.style.height = Math.min(target.scrollHeight, 160) + 'px'
                 }}
+                onBlur={() => resetTextareaHeight()}
               />
             </div>
 
