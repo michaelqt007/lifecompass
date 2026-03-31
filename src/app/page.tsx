@@ -112,9 +112,14 @@ export default function Home() {
     textareaRef.current.scrollTop = 0
   }
 
-  const resizeTextarea = (el: HTMLTextAreaElement) => {
+  const resizeTextarea = () => {
+    const el = textareaRef.current
+    if (!el) return
+
+    const previousHeight = el.style.height
     el.style.height = '48px'
     const nextHeight = Math.min(el.scrollHeight, 160)
+    el.style.height = previousHeight
     setTextareaHeight(nextHeight)
   }
 
@@ -393,7 +398,10 @@ export default function Home() {
             <div className="flex-1 min-w-0 relative">
               <textarea
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                  setInput(e.target.value)
+                  requestAnimationFrame(() => resizeTextarea())
+                }}
                 onKeyPress={handleKeyPress}
                 placeholder={isVoiceMode ? "说完松开按钮..." : "输入你想说的..."}
                 className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus bg-white/50 backdrop-blur-sm transition-all text-left leading-6"
@@ -408,7 +416,6 @@ export default function Home() {
                   overflowWrap: 'anywhere',
                   wordBreak: 'break-word',
                 }}
-                onInput={(e) => resizeTextarea(e.target as HTMLTextAreaElement)}
                 onBlur={() => resetTextareaHeight()}
               />
             </div>
