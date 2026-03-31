@@ -116,10 +116,7 @@ export default function Home() {
     const el = textareaRef.current
     if (!el) return
 
-    const previousHeight = el.style.height
-    el.style.height = '48px'
     const nextHeight = Math.min(el.scrollHeight, 160)
-    el.style.height = previousHeight
     setTextareaHeight(nextHeight)
   }
 
@@ -407,8 +404,7 @@ export default function Home() {
                 className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus bg-white/50 backdrop-blur-sm transition-all text-left leading-6"
                 rows={1}
                 style={{ 
-                  height: `${textareaHeight}px`,
-                  minHeight: '48px', 
+                  minHeight: `${textareaHeight}px`,
                   maxHeight: '160px',
                   overflowY: 'auto',
                   boxSizing: 'border-box',
