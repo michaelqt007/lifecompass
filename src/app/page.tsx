@@ -19,6 +19,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
   const [isVoiceMode, setIsVoiceMode] = useState(true)
+  const [debugInfo, setDebugInfo] = useState('')
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const recognitionRef = useRef<any>(null)
@@ -49,9 +50,12 @@ export default function Home() {
   const bindRecognitionEvents = (recognition: any) => {
     recognition.onstart = () => {
       setIsRecording(true)
+      setDebugInfo('onstart 触发')
     }
 
     recognition.onresult = (event: any) => {
+      setDebugInfo(`onresult 触发, results.length=${event.results.length}`)
+
       let text = ''
 
       for (let i = event.resultIndex || 0; i < event.results.length; i++) {
@@ -61,6 +65,8 @@ export default function Home() {
       }
 
       const transcript = text.trim()
+      setDebugInfo(`transcript="${transcript}"`)
+
       if (!transcript) return
 
       setInput(transcript)
@@ -76,10 +82,13 @@ export default function Home() {
 
     recognition.onend = () => {
       setIsRecording(false)
+      setDebugInfo('onend 触发')
     }
 
     recognition.onerror = (event: any) => {
       setIsRecording(false)
+      setDebugInfo(`onerror: ${event?.error || 'unknown'}`)
+
       if (event?.error === 'not-allowed') {
         alert('需要麦克风权限，请在浏览器设置中允许')
       } else if (event?.error === 'audio-capture') {
@@ -281,10 +290,13 @@ export default function Home() {
       <div className="sticky bottom-0 bg-white/80 backdrop-blur-md border-t border-gray-100">
         <div className="max-w-3xl mx-auto px-4 py-4">
           {isVoiceMode && (
-            <div className="mb-2 text-center h-5">
+            <div className="mb-2 text-center">
               <p className={`text-sm ${isRecording ? 'text-red-500 font-medium' : 'text-gray-500'}`}>
                 {isRecording ? '🔴 正在录音... 说完松开' : '点击按钮开始说话'}
               </p>
+              {debugInfo && (
+                <p className="text-xs text-orange-500 mt-1">调试: {debugInfo}</p>
+              )}
             </div>
           )}
 
