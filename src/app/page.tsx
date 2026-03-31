@@ -381,15 +381,17 @@ export default function Home() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder={isVoiceMode ? "说完松开按钮..." : "输入你想说的..."}
-                className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus bg-white/50 backdrop-blur-sm transition-all"
+                className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus bg-white/50 backdrop-blur-sm transition-all text-right leading-6"
                 rows={1}
                 style={{ 
                   minHeight: '48px', 
                   maxHeight: '160px',
+                  overflowY: 'auto',
+                  boxSizing: 'border-box',
                 }}
                 onInput={(e) => {
                   const target = e.target as HTMLTextAreaElement
-                  target.style.height = 'auto'
+                  target.style.height = '48px'
                   target.style.height = Math.min(target.scrollHeight, 160) + 'px'
                 }}
               />
