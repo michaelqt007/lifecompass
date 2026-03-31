@@ -20,6 +20,7 @@ export default function Home() {
   const [isRecording, setIsRecording] = useState(false)
   const [isVoiceMode, setIsVoiceMode] = useState(true)
   const [debugInfo, setDebugInfo] = useState('')
+  const [showCompatWarning, setShowCompatWarning] = useState(false)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const recognitionRef = useRef<any>(null)
@@ -48,12 +49,30 @@ export default function Home() {
   }
 
   const bindRecognitionEvents = (recognition: any) => {
+    let resultTimeout: any = null
+
+    const clearTimeouts = () => {
+      if (resultTimeout) {
+        clearTimeout(resultTimeout)
+        resultTimeout = null
+      }
+    }
+
     recognition.onstart = () => {
       setIsRecording(true)
       setDebugInfo('onstart 触发')
+
+      // 如果 5 秒内没有 onresult，显示兼容性警告
+      resultTimeout = setTimeout(() => {
+        setShowCompatWarning(true)
+        setDebugInfo('浏览器可能不支持完整语音识别')
+      }, 5000)
     }
 
     recognition.onresult = (event: any) => {
+      clearTimeouts()
+      setShowCompatWarning(false)
+
       setDebugInfo(`onresult 触发, results.length=${event.results.length}`)
 
       let text = ''
@@ -81,11 +100,13 @@ export default function Home() {
     }
 
     recognition.onend = () => {
+      clearTimeouts()
       setIsRecording(false)
       setDebugInfo('onend 触发')
     }
 
     recognition.onerror = (event: any) => {
+      clearTimeouts()
       setIsRecording(false)
       setDebugInfo(`onerror: ${event?.error || 'unknown'}`)
 
@@ -189,6 +210,7 @@ export default function Home() {
 
     if (isRecording) {
       setDebugInfo('停止录音')
+      setShowCompatWarning(false)
       recognitionRef.current?.stop()
       setIsRecording(false)
       return
@@ -315,6 +337,11 @@ export default function Home() {
               </p>
               {debugInfo && (
                 <p className="text-xs text-orange-500 mt-1">调试: {debugInfo}</p>
+              )}
+              {showCompatWarning && (
+                <p className="text-xs text-red-500 mt-2 font-medium">
+                  ⚠️ 当前浏览器可能不支持完整语音识别，建议使用 Chrome 浏览器或改用文字输入
+                </p>
               )}
             </div>
           )}
