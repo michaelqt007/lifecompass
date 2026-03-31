@@ -125,13 +125,6 @@ export default function Home() {
     setInput('')
     setIsLoading(true)
 
-    requestAnimationFrame(() => {
-      if (textareaRef.current) {
-        textareaRef.current.style.height = '48px'
-        textareaRef.current.scrollTop = 0
-      }
-    })
-
     try {
       // 调用 API 获取小雨的回复
       const response = await fetch('/api/chat', {
@@ -174,6 +167,8 @@ export default function Home() {
       setMessages((prev) => [...prev, errorMessage])
     } finally {
       setIsLoading(false)
+      requestAnimationFrame(() => resetTextareaHeight())
+      setTimeout(() => resetTextareaHeight(), 0)
     }
   }
 
