@@ -19,6 +19,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
   const [isVoiceMode, setIsVoiceMode] = useState(true)
+  const [textareaHeight, setTextareaHeight] = useState(48)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const recognitionRef = useRef<any>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -106,9 +107,15 @@ export default function Home() {
 
   // 发送消息
   const resetTextareaHeight = () => {
+    setTextareaHeight(48)
     if (!textareaRef.current) return
-    textareaRef.current.style.height = '48px'
     textareaRef.current.scrollTop = 0
+  }
+
+  const resizeTextarea = (el: HTMLTextAreaElement) => {
+    el.style.height = '48px'
+    const nextHeight = Math.min(el.scrollHeight, 160)
+    setTextareaHeight(nextHeight)
   }
 
   const sendMessage = async () => {
@@ -167,8 +174,7 @@ export default function Home() {
       setMessages((prev) => [...prev, errorMessage])
     } finally {
       setIsLoading(false)
-      requestAnimationFrame(() => resetTextareaHeight())
-      setTimeout(() => resetTextareaHeight(), 0)
+      resetTextareaHeight()
     }
   }
 
@@ -393,6 +399,7 @@ export default function Home() {
                 className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus bg-white/50 backdrop-blur-sm transition-all text-left leading-6"
                 rows={1}
                 style={{ 
+                  height: `${textareaHeight}px`,
                   minHeight: '48px', 
                   maxHeight: '160px',
                   overflowY: 'auto',
@@ -401,11 +408,7 @@ export default function Home() {
                   overflowWrap: 'anywhere',
                   wordBreak: 'break-word',
                 }}
-                onInput={(e) => {
-                  const target = e.target as HTMLTextAreaElement
-                  target.style.height = '48px'
-                  target.style.height = Math.min(target.scrollHeight, 160) + 'px'
-                }}
+                onInput={(e) => resizeTextarea(e.target as HTMLTextAreaElement)}
                 onBlur={() => resetTextareaHeight()}
               />
             </div>
