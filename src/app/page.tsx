@@ -116,8 +116,9 @@ export default function Home() {
     const el = textareaRef.current
     if (!el) return
 
+    el.style.height = 'auto'
     const nextHeight = Math.min(el.scrollHeight, 160)
-    setTextareaHeight(nextHeight)
+    setTextareaHeight(Math.max(48, nextHeight))
   }
 
   const sendMessage = async () => {
@@ -404,7 +405,8 @@ export default function Home() {
                 className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus bg-white/50 backdrop-blur-sm transition-all text-left leading-6"
                 rows={1}
                 style={{ 
-                  minHeight: `${textareaHeight}px`,
+                  height: `${textareaHeight}px`,
+                  minHeight: '48px',
                   maxHeight: '160px',
                   overflowY: 'auto',
                   boxSizing: 'border-box',
