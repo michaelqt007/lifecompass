@@ -118,9 +118,17 @@ export default function Home() {
   const resetTextareaHeight = () => {
     setTextareaHeight(48)
     if (!textareaRef.current) return
+    textareaRef.current.style.height = '48px'
     textareaRef.current.scrollTop = 0
   }
 
+  const autoResizeTextarea = () => {
+    const el = textareaRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    const next = Math.min(el.scrollHeight, 160)
+    setTextareaHeight(Math.max(48, next))
+  }
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return
@@ -134,6 +142,7 @@ export default function Home() {
 
     setMessages((prev) => [...prev, userMessage])
     setInput('')
+    requestAnimationFrame(() => resetTextareaHeight())
     setIsLoading(true)
 
     try {
@@ -178,7 +187,7 @@ export default function Home() {
       setMessages((prev) => [...prev, errorMessage])
     } finally {
       setIsLoading(false)
-      resetTextareaHeight()
+      requestAnimationFrame(() => resetTextareaHeight())
     }
   }
 
@@ -397,7 +406,10 @@ export default function Home() {
             <div className="flex-1 min-w-0 relative">
               <textarea
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={(e) => {
+                  setInput(e.target.value)
+                  requestAnimationFrame(() => autoResizeTextarea())
+                }}
                 onKeyPress={handleKeyPress}
                 placeholder={isVoiceMode ? "说完松开按钮..." : "输入你想说的..."}
                 className="w-full resize-none rounded-2xl border border-gray-200 px-4 py-3 input-focus bg-white/50 backdrop-blur-sm transition-all text-left leading-6"
