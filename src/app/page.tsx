@@ -123,11 +123,14 @@ export default function Home() {
 
     setMessages((prev) => [...prev, userMessage])
     setInput('')
-    if (textareaRef.current) {
-      textareaRef.current.style.height = '48px'
-      textareaRef.current.scrollTop = 0
-    }
     setIsLoading(true)
+
+    requestAnimationFrame(() => {
+      if (textareaRef.current) {
+        textareaRef.current.style.height = '48px'
+        textareaRef.current.scrollTop = 0
+      }
+    })
 
     try {
       // 调用 API 获取小雨的回复
