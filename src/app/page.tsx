@@ -89,6 +89,12 @@ export default function Home() {
       setIsRecording(false)
       setDebugInfo(`onerror: ${event?.error || 'unknown'}`)
 
+      // aborted 是正常的中止，不需要弹窗
+      if (event?.error === 'aborted') {
+        setDebugInfo('识别中止 (aborted)')
+        return
+      }
+
       if (event?.error === 'not-allowed') {
         alert('需要麦克风权限，请在浏览器设置中允许')
       } else if (event?.error === 'audio-capture') {
@@ -171,14 +177,18 @@ export default function Home() {
   }
 
   const toggleRecording = async () => {
+    setDebugInfo('点击语音按钮')
+
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
 
     if (!SpeechRecognition) {
+      setDebugInfo('浏览器不支持语音识别')
       alert('您的浏览器不支持语音输入，请使用 Chrome 浏览器')
       return
     }
 
     if (isRecording) {
+      setDebugInfo('停止录音')
       recognitionRef.current?.stop()
       setIsRecording(false)
       return
@@ -189,13 +199,14 @@ export default function Home() {
         const permissionStatus = await navigator.permissions.query({
           name: 'microphone' as PermissionName,
         })
+        setDebugInfo(`权限状态: ${permissionStatus.state}`)
         if (permissionStatus.state === 'denied') {
           alert('麦克风权限被拒绝，请在浏览器设置中允许麦克风访问')
           return
         }
       }
     } catch {
-      // ignore
+      setDebugInfo('无法检查权限')
     }
 
     try {
@@ -205,13 +216,16 @@ export default function Home() {
     }
 
     try {
+      setDebugInfo('创建识别器')
       const recognition = new SpeechRecognition()
       recognition.continuous = false
       recognition.interimResults = true
       recognition.lang = 'zh-CN'
       bindRecognitionEvents(recognition)
       recognitionRef.current = recognition
-    } catch {
+      setDebugInfo('识别器创建成功')
+    } catch (e: any) {
+      setDebugInfo(`识别器创建失败: ${e.message || 'unknown'}`)
       alert('语音识别初始化失败')
       return
     }
@@ -219,10 +233,15 @@ export default function Home() {
     setInput('')
     requestAnimationFrame(() => resetTextarea())
 
+    setDebugInfo('准备启动识别')
+
     setTimeout(() => {
       try {
+        setDebugInfo('调用 start()')
         recognitionRef.current?.start()
-      } catch {
+        setDebugInfo('start() 调用成功')
+      } catch (e: any) {
+        setDebugInfo(`start() 失败: ${e.message || 'unknown'}`)
         setIsRecording(false)
         alert('语音识别启动失败')
       }
