@@ -70,6 +70,9 @@ export default function Home() {
       clearTimeouts()
       setShowCompatWarning(false)
 
+      // 调试信息
+      alert(`onresult 触发！results.length=${event.results.length}, resultIndex=${event.resultIndex}`)
+
       let text = ''
 
       for (let i = event.resultIndex || 0; i < event.results.length; i++) {
@@ -79,6 +82,8 @@ export default function Home() {
       }
 
       const transcript = text.trim()
+      alert(`transcript="${transcript}"`)
+      
       if (!transcript) return
 
       setInput(transcript)
