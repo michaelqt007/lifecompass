@@ -237,6 +237,17 @@ export default function Home() {
       return
     }
 
+    // 先测试麦克风是否能访问
+    try {
+      alert('正在测试麦克风访问...')
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      alert('✅ 麦克风访问成功！音频轨道数：' + stream.getAudioTracks().length)
+      stream.getTracks().forEach(track => track.stop()) // 停止测试用的流
+    } catch (e: any) {
+      alert('❌ 麦克风访问失败：' + e.message)
+      return
+    }
+
     try {
       if (navigator.permissions) {
         const permissionStatus = await navigator.permissions.query({
