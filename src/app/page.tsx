@@ -229,10 +229,18 @@ export default function Home() {
   const toggleRecording = async () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
 
+    // 检查浏览器类型
+    const ua = navigator.userAgent
+    const isXiaomi = ua.includes('MiuiBrowser') || ua.includes('XiaoMi')
+    const isBaidu = ua.includes('Baidu') || ua.includes('baiduboxapp')
+    alert(`浏览器检测：${isXiaomi ? '小米浏览器' : isBaidu ? '百度浏览器' : '其他浏览器'}`)
+
     if (!SpeechRecognition) {
       alert('您的浏览器不支持语音输入，请使用 Chrome 浏览器')
       return
     }
+
+    alert(`SpeechRecognition 类型：${SpeechRecognition.name || 'unknown'}`)
 
     if (isRecording) {
       setShowCompatWarning(false)
