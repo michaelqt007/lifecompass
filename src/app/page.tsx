@@ -166,7 +166,7 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMessage.content,
-          conversationHistory: messages.map((m) => ({
+          conversationHistory: messages.slice(-10).map((m) => ({
             role: m.role === 'xiaoyu' ? 'assistant' : m.role,
             content: m.content,
           })),

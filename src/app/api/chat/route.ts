@@ -129,21 +129,26 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { message, conversationHistory = [] } = body
     
+    // 验证消息
+    if (!message || typeof message !== 'string' || message.trim().length === 0) {
+      return NextResponse.json({ reply: '你想聊点什么呢？' })
+    }
+    
     console.log(`[💬 Chat API] 用户消息：${message?.substring(0, 50)}...`)
-    console.log(`[💬 Chat API] API Key 是否存在：${!!process.env.DASHSCOPE_API_KEY}`)
-    console.log(`[💬 Chat API] API Key 前缀：${process.env.DASHSCOPE_API_KEY?.substring(0, 10)}...`)
+    console.log(`[💬 Chat API] 对话历史长度：${conversationHistory?.length || 0}`)
 
-    // 构建对话历史（前端传来的 history）
-    const history = conversationHistory.slice(-10).map((m: any) => ({
+    // 限制对话历史长度，防止请求体过大
+    const maxHistory = 10
+    const history = (conversationHistory || []).slice(-maxHistory).map((m: any) => ({
       role: m.role === 'xiaoyu' ? 'assistant' : m.role,
-      content: m.content,
+      content: String(m.content || ''),
     }))
     
     // 构建完整消息：system + history + user
     const messages = [
       { role: 'system', content: XIAOYU_SYSTEM_PROMPT },
       ...history,
-      { role: 'user', content: message },
+      { role: 'user', content: message.trim() },
     ]
     
     console.log(`[💬 Chat API] 消息数量：${messages.length}`)
@@ -162,6 +167,10 @@ export async function POST(request: NextRequest) {
     
     console.log(`[💬 Chat API] 请求体：${JSON.stringify(requestBody).substring(0, 200)}...`)
 
+    // 设置超时
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 30000) // 30秒超时
+
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
@@ -169,7 +178,10 @@ export async function POST(request: NextRequest) {
         'Authorization': `Bearer ${process.env.DASHSCOPE_API_KEY}`,
       },
       body: JSON.stringify(requestBody),
+      signal: controller.signal,
     })
+
+    clearTimeout(timeout)
 
     console.log(`[💬 Chat API] 响应状态码：${response.status} ${response.statusText}`)
     
@@ -198,11 +210,18 @@ export async function POST(request: NextRequest) {
     
   } catch (error: any) {
     console.error(`[💬 Chat API] ❌ 异常：${error.message}`)
-    console.error(`[💬 Chat API] 错误堆栈：${error.stack}`)
     
-    // 降级回复（当 API 不可用时）
+    // 根据错误类型返回不同的提示
+    let errorMessage = '抱歉，我刚才走神了...'
+    
+    if (error.name === 'AbortError') {
+      errorMessage = '抱歉，我想太久了...能再说一遍吗？'
+    } else if (error.message?.includes('fetch')) {
+      errorMessage = '网络好像不太好，能再说一遍吗？'
+    }
+    
     return NextResponse.json({
-      reply: `抱歉，遇到了一点问题：${error.message}. 小雨在这里陪着你，可以再说多一点吗？`
+      reply: errorMessage
     })
   }
 }
