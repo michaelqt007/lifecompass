@@ -102,7 +102,12 @@ export default function Home() {
     recognition.onend = () => {
       clearTimeouts()
       setIsRecording(false)
-      setDebugInfo('onend 触发')
+      // 只有在 start() 调用后才显示 onend
+      if (recognition._started) {
+        setDebugInfo('onend 触发')
+      } else {
+        setDebugInfo('识别器未启动就结束了（可能是权限问题）')
+      }
     }
 
     recognition.onerror = (event: any) => {
@@ -260,7 +265,10 @@ export default function Home() {
     setTimeout(() => {
       try {
         setDebugInfo('调用 start()')
-        recognitionRef.current?.start()
+        if (recognitionRef.current) {
+          recognitionRef.current._started = true
+          recognitionRef.current.start()
+        }
         setDebugInfo('start() 调用成功')
       } catch (e: any) {
         setDebugInfo(`start() 失败: ${e.message || 'unknown'}`)
