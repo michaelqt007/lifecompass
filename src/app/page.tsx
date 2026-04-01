@@ -59,11 +59,43 @@ export default function Home() {
 
     recognition.onstart = () => {
       setIsRecording(true)
+      console.log('=== onstart 触发 ===')
+      alert('onstart 触发')
 
       // 如果 5 秒内没有 onresult，显示兼容性警告
       resultTimeout = setTimeout(() => {
         setShowCompatWarning(true)
       }, 5000)
+    }
+
+    recognition.onaudiostart = () => {
+      console.log('=== onaudiostart 触发 ===')
+      alert('onaudiostart 触发 - 音频捕获开始')
+    }
+
+    recognition.onsoundstart = () => {
+      console.log('=== onsoundstart 触发 ===')
+      alert('onsoundstart 触发 - 检测到声音')
+    }
+
+    recognition.onspeechstart = () => {
+      console.log('=== onspeechstart 触发 ===')
+      alert('onspeechstart 触发 - 检测到语音')
+    }
+
+    recognition.onspeechend = () => {
+      console.log('=== onspeechend 触发 ===')
+      alert('onspeechend 触发 - 语音结束')
+    }
+
+    recognition.onsoundend = () => {
+      console.log('=== onsoundend 触发 ===')
+      alert('onsoundend 触发 - 声音结束')
+    }
+
+    recognition.onaudioend = () => {
+      console.log('=== onaudioend 触发 ===')
+      alert('onaudioend 触发 - 音频捕获结束')
     }
 
     recognition.onresult = (event: any) => {
