@@ -19,7 +19,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
   const [isRecording, setIsRecording] = useState(false)
   const [isVoiceMode, setIsVoiceMode] = useState(true)
-  const [debugInfo, setDebugInfo] = useState('')
   const [showCompatWarning, setShowCompatWarning] = useState(false)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -60,20 +59,16 @@ export default function Home() {
 
     recognition.onstart = () => {
       setIsRecording(true)
-      setDebugInfo('onstart 触发')
 
       // 如果 5 秒内没有 onresult，显示兼容性警告
       resultTimeout = setTimeout(() => {
         setShowCompatWarning(true)
-        setDebugInfo('浏览器可能不支持完整语音识别')
       }, 5000)
     }
 
     recognition.onresult = (event: any) => {
       clearTimeouts()
       setShowCompatWarning(false)
-
-      setDebugInfo(`onresult 触发, results.length=${event.results.length}`)
 
       let text = ''
 
@@ -84,8 +79,6 @@ export default function Home() {
       }
 
       const transcript = text.trim()
-      setDebugInfo(`transcript="${transcript}"`)
-
       if (!transcript) return
 
       setInput(transcript)
@@ -102,22 +95,14 @@ export default function Home() {
     recognition.onend = () => {
       clearTimeouts()
       setIsRecording(false)
-      // 只有在 start() 调用后才显示 onend
-      if (recognition._started) {
-        setDebugInfo('onend 触发')
-      } else {
-        setDebugInfo('识别器未启动就结束了（可能是权限问题）')
-      }
     }
 
     recognition.onerror = (event: any) => {
       clearTimeouts()
       setIsRecording(false)
-      setDebugInfo(`onerror: ${event?.error || 'unknown'}`)
 
       // aborted 是正常的中止，不需要弹窗
       if (event?.error === 'aborted') {
-        setDebugInfo('识别中止 (aborted)')
         return
       }
 
@@ -126,9 +111,7 @@ export default function Home() {
       } else if (event?.error === 'audio-capture') {
         alert('无法访问麦克风，请检查设备权限')
       } else if (event?.error === 'no-speech') {
-        alert('没有检测到语音，请重试')
-      } else {
-        alert(`语音识别错误：${event?.error || 'unknown'}`)
+        // no-speech 不弹窗
       }
     }
   }
@@ -203,18 +186,14 @@ export default function Home() {
   }
 
   const toggleRecording = async () => {
-    setDebugInfo('点击语音按钮')
-
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
 
     if (!SpeechRecognition) {
-      setDebugInfo('浏览器不支持语音识别')
       alert('您的浏览器不支持语音输入，请使用 Chrome 浏览器')
       return
     }
 
     if (isRecording) {
-      setDebugInfo('停止录音')
       setShowCompatWarning(false)
       recognitionRef.current?.stop()
       setIsRecording(false)
@@ -226,14 +205,13 @@ export default function Home() {
         const permissionStatus = await navigator.permissions.query({
           name: 'microphone' as PermissionName,
         })
-        setDebugInfo(`权限状态: ${permissionStatus.state}`)
         if (permissionStatus.state === 'denied') {
           alert('麦克风权限被拒绝，请在浏览器设置中允许麦克风访问')
           return
         }
       }
     } catch {
-      setDebugInfo('无法检查权限')
+      // ignore
     }
 
     try {
@@ -243,16 +221,13 @@ export default function Home() {
     }
 
     try {
-      setDebugInfo('创建识别器')
       const recognition = new SpeechRecognition()
       recognition.continuous = false
       recognition.interimResults = true
       recognition.lang = 'zh-CN'
       bindRecognitionEvents(recognition)
       recognitionRef.current = recognition
-      setDebugInfo('识别器创建成功')
-    } catch (e: any) {
-      setDebugInfo(`识别器创建失败: ${e.message || 'unknown'}`)
+    } catch {
       alert('语音识别初始化失败')
       return
     }
@@ -260,18 +235,10 @@ export default function Home() {
     setInput('')
     requestAnimationFrame(() => resetTextarea())
 
-    setDebugInfo('准备启动识别')
-
     setTimeout(() => {
       try {
-        setDebugInfo('调用 start()')
-        if (recognitionRef.current) {
-          recognitionRef.current._started = true
-          recognitionRef.current.start()
-        }
-        setDebugInfo('start() 调用成功')
-      } catch (e: any) {
-        setDebugInfo(`start() 失败: ${e.message || 'unknown'}`)
+        recognitionRef.current?.start()
+      } catch {
         setIsRecording(false)
         alert('语音识别启动失败')
       }
@@ -343,9 +310,6 @@ export default function Home() {
               <p className={`text-sm ${isRecording ? 'text-red-500 font-medium' : 'text-gray-500'}`}>
                 {isRecording ? '🔴 正在录音... 说完松开' : '点击按钮开始说话'}
               </p>
-              {debugInfo && (
-                <p className="text-xs text-orange-500 mt-1">调试: {debugInfo}</p>
-              )}
               {showCompatWarning && (
                 <p className="text-xs text-red-500 mt-2 font-medium">
                   ⚠️ 当前浏览器可能不支持完整语音识别，建议使用 Chrome 浏览器或改用文字输入
