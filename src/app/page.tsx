@@ -132,6 +132,10 @@ export default function Home() {
     recognition.onend = () => {
       clearTimeouts()
       setIsRecording(false)
+      // 释放音频流
+      if ((recognition as any)._audioStream) {
+        (recognition as any)._audioStream.getTracks().forEach((track: any) => track.stop())
+      }
     }
 
     recognition.onerror = (event: any) => {
@@ -237,12 +241,13 @@ export default function Home() {
       return
     }
 
-    // 先测试麦克风是否能访问
+    // 先获取麦克风权限，保持音频流
+    let audioStream: MediaStream | null = null
     try {
-      alert('正在测试麦克风访问...')
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      alert('✅ 麦克风访问成功！音频轨道数：' + stream.getAudioTracks().length)
-      stream.getTracks().forEach(track => track.stop()) // 停止测试用的流
+      alert('正在获取麦克风权限...')
+      audioStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      alert('✅ 麦克风访问成功！音频轨道数：' + audioStream.getAudioTracks().length)
+      // 不停止音频流，保持活跃状态
     } catch (e: any) {
       alert('❌ 麦克风访问失败：' + e.message)
       return
@@ -273,10 +278,14 @@ export default function Home() {
       recognition.continuous = false
       recognition.interimResults = true
       recognition.lang = 'zh-CN'
+      ;(recognition as any)._audioStream = audioStream // 关联音频流
       bindRecognitionEvents(recognition)
       recognitionRef.current = recognition
     } catch {
       alert('语音识别初始化失败')
+      if (audioStream) {
+        audioStream.getTracks().forEach(track => track.stop())
+      }
       return
     }
 
