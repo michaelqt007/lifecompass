@@ -339,6 +339,13 @@ export default function Home() {
           >
             🎤 语音
           </button>
+
+          <a
+            href="/blog"
+            className="px-3 py-1.5 rounded-full text-sm bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all"
+          >
+            📖 博客
+          </a>
         </div>
       </header>
 
