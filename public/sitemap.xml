@@ -37,7 +37,25 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://lifecompass-phi.vercel.app/blog/who-is-xiaoyu</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://lifecompass-phi.vercel.app/blog/how-to-find-direction</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lifecompass-phi.vercel.app/blog/art-of-listening</loc>
+    <lastmod>2026-04-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://lifecompass-phi.vercel.app/blog/small-steps</loc>
     <lastmod>2026-04-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
