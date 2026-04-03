@@ -1,0 +1,21 @@
+{
+  "name": "LifeCompass - 你的人生教练",
+  "short_name": "LifeCompass",
+  "description": "小雨是一个温柔的人生教练 AI，陪你探索人生方向，理清思绪，找到内心的答案。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8B5CF6",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
