@@ -444,6 +444,19 @@ export default function Home() {
           <p className="text-xs text-gray-400 text-center mt-3">
             小雨在这里陪着你，想说什么都可以 🌧
           </p>
+
+          <footer className="mt-8 pt-4 border-t border-gray-100 text-center">
+            <nav className="flex justify-center space-x-4 text-xs text-gray-400">
+              <a href="/about" className="hover:text-purple-600">关于我们</a>
+              <span>·</span>
+              <a href="/features" className="hover:text-purple-600">功能介绍</a>
+              <span>·</span>
+              <a href="/privacy" className="hover:text-purple-600">隐私政策</a>
+            </nav>
+            <p className="text-xs text-gray-300 mt-2">
+              © 2026 LifeCompass. All rights reserved.
+            </p>
+          </footer>
         </div>
       </div>
     </main>
