@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '小步前进：如何迈出第一步 - LifeCompass 博客',
-  description: '改变不需要一次完成。只要迈出一小步，就已经在路上了。',
+  title: 'Small Steps Forward: How to Take the First Step - LifeCompass Blog',
+  description: 'Change doesn\'t have to happen all at once. Just taking one small step means you\'re already on the way.',
 }
 
 export default function BlogPost() {
@@ -10,66 +10,69 @@ export default function BlogPost() {
     <main className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-4">
       <article className="max-w-3xl mx-auto">
         <header className="mb-8">
-          <p className="text-sm text-gray-400 mb-2">2026年4月1日 · 成长</p>
-          <h1 className="text-3xl font-bold text-gray-800">小步前进：如何迈出第一步</h1>
+          <p className="text-sm text-gray-400 mb-2">April 1, 2026 · Growth</p>
+          <h1 className="text-3xl font-bold text-gray-800">Small Steps Forward: How to Take the First Step</h1>
         </header>
 
         <div className="prose prose-lg max-w-none">
           <p className="text-gray-600 leading-relaxed">
-            很多人卡住，不是因为不想改变，而是因为觉得要"一次做对"。
+            Many people get stuck not because they don't want to change, but because they 
+            think they need to "get it right in one go."
           </p>
 
           <p className="text-gray-600 leading-relaxed">
-            其实不需要。
+            Actually, you don't.
           </p>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">为什么我们会卡住？</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">Why do we get stuck?</h2>
           <ul className="text-gray-600 space-y-2">
-            <li>• 想太多，把所有可能都想过一遍</li>
-            <li>• 怕选错，觉得只有一次机会</li>
-            <li>• 等一个"准备好"的时刻</li>
-            <li>• 想一次做完美</li>
+            <li>• Overthinking, considering all possibilities</li>
+            <li>• Fear of choosing wrong, thinking there's only one chance</li>
+            <li>• Waiting for a "ready" moment</li>
+            <li>• Wanting to be perfect the first time</li>
           </ul>
 
           <p className="text-gray-600 leading-relaxed mt-4">
-            但这些都是错觉。
+            But these are all illusions.
           </p>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">小步前进是什么意思？</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">What does small steps mean?</h2>
           <p className="text-gray-600 leading-relaxed">
-            不是让你降低标准。而是让你把"改变"拆成很多小步，一次只迈一步。
+            It doesn't mean lowering your standards. It means breaking "change" into many 
+            small steps, taking only one at a time.
           </p>
 
           <p className="text-gray-600 leading-relaxed">
-            比如：
+            For example:
           </p>
           <ul className="text-gray-600 space-y-2">
-            <li>• 不是"我要换工作"，而是"这周我更新一下简历"</li>
-            <li>• 不是"我要开始运动"，而是"今天走 10 分钟"</li>
-            <li>• 不是"我要想清楚人生"，而是"写下现在脑子里想的事"</li>
+            <li>• Not "I want to change jobs," but "This week I'll update my resume"</li>
+            <li>• Not "I want to start exercising," but "Today I'll walk for 10 minutes"</li>
+            <li>• Not "I want to figure out life," but "Write down what's on my mind right now"</li>
           </ul>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">为什么小步更有效？</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">Why are small steps more effective?</h2>
           <ul className="text-gray-600 space-y-2">
-            <li>• 门槛低，不会拖着不动</li>
-            <li>• 有反馈，知道方向对不对</li>
-            <li>• 能调整，错了就换个方向</li>
-            <li>• 有成就感，会想继续走</li>
+            <li>• Low barrier, won't keep procrastinating</li>
+            <li>• Get feedback, know if direction is right</li>
+            <li>• Can adjust, change direction if wrong</li>
+            <li>• Sense of achievement, want to keep going</li>
           </ul>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">小雨怎么帮你？</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">How can Xiaoyu help?</h2>
           <p className="text-gray-600 leading-relaxed">
-            她不会说"你应该做这个"。她会问：
+            She won't say "you should do this." She'll ask:
           </p>
           <ul className="text-gray-600 space-y-2">
-            <li>• "你想改变的是什么？"</li>
-            <li>• "最小的一步是什么？"</li>
-            <li>• "这周你能做到吗？"</li>
-            <li>• "如果卡住了，怎么办？"</li>
+            <li>• "What do you want to change?"</li>
+            <li>• "What's the smallest step?"</li>
+            <li>• "Can you do this this week?"</li>
+            <li>• "If you get stuck, what then?"</li>
           </ul>
 
           <p className="text-gray-600 leading-relaxed mt-8">
-            改变不需要一次完成。只要迈出一小步，就已经在路上了。
+            Change doesn't have to happen all at once. Just taking one small step means 
+            you're already on the way.
           </p>
         </div>
       </article>

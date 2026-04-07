@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '迷茫的时候怎么办？ - LifeCompass 博客',
-  description: '当你不知道自己想要什么时，小雨会通过提问帮你理清思绪，而不是直接给答案。',
+  title: 'What to Do When You Feel Lost - LifeCompass Blog',
+  description: 'When you don\'t know what you want, Xiaoyu helps you clarify your thoughts through questions, not by giving direct answers.',
 }
 
 export default function BlogPost() {
@@ -10,57 +10,61 @@ export default function BlogPost() {
     <main className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-4">
       <article className="max-w-3xl mx-auto">
         <header className="mb-8">
-          <p className="text-sm text-gray-400 mb-2">2026年4月3日 · 成长</p>
-          <h1 className="text-3xl font-bold text-gray-800">迷茫的时候怎么办？</h1>
+          <p className="text-sm text-gray-400 mb-2">April 3, 2026 · Growth</p>
+          <h1 className="text-3xl font-bold text-gray-800">What to Do When You Feel Lost</h1>
         </header>
 
         <div className="prose prose-lg max-w-none">
           <p className="text-gray-600 leading-relaxed">
-            迷茫是正常的。每个人都会经历这样的时刻——不知道自己想要什么，不知道未来该往哪走。
+            Feeling lost is normal. Everyone goes through moments when they don't know what 
+            they want or where to go next.
           </p>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">为什么我们会迷茫？</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">Why do we feel lost?</h2>
           <p className="text-gray-600 leading-relaxed">
-            通常有几个原因：
+            Usually for several reasons:
           </p>
           <ul className="text-gray-600 space-y-2">
-            <li>• 选择太多，不知道选哪个</li>
-            <li>• 外界期望和内心想法冲突</li>
-            <li>• 经历了变化，旧的参考系失效</li>
-            <li>• 太久没有问过自己想要什么</li>
+            <li>• Too many choices, don't know which to pick</li>
+            <li>• External expectations conflict with inner desires</li>
+            <li>• Experienced change, old reference points no longer work</li>
+            <li>• Haven't asked ourselves what we want for too long</li>
           </ul>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">不要急着找答案</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">Don't rush to find answers</h2>
           <p className="text-gray-600 leading-relaxed">
-            迷茫时最想做的事就是快速找到答案。但往往越急越乱。
+            When lost, the thing we most want to do is quickly find an answer. But often the 
+            more we rush, the more confused we get.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            试着先放慢一点。承认自己现在不知道，这本身就是一个开始。
+            Try slowing down first. Admitting you don't know right now is itself a beginning.
           </p>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">可以做的事</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">Things you can do</h2>
           <ul className="text-gray-600 space-y-2">
-            <li>• 写下现在脑子里想的事，不用整理</li>
-            <li>• 问自己：如果什么都不用考虑，我会想做什么？</li>
-            <li>• 找一个可以倾诉的人，不一定要给建议</li>
-            <li>• 允许自己试错，而不是一次性做对</li>
+            <li>• Write down what's in your mind, no need to organize</li>
+            <li>• Ask yourself: If nothing else mattered, what would I want to do?</li>
+            <li>• Find someone to talk to who doesn't need to give advice</li>
+            <li>• Allow yourself to try and fail, instead of getting it right in one go</li>
           </ul>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">小雨怎么帮你</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">How Xiaoyu can help</h2>
           <p className="text-gray-600 leading-relaxed">
-            小雨不会告诉你应该怎么做。她会问一些问题，帮你听见自己内心的声音。
+            Xiaoyu won't tell you what to do. She'll ask questions to help you hear your 
+            own inner voice.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            比如：
+            For example:
           </p>
           <ul className="text-gray-600 space-y-2">
-            <li>• "这个想法在你心里放了多久了？"</li>
-            <li>• "如果抛开恐惧，你会怎么选？"</li>
-            <li>• "你觉得最理想的画面是什么样的？"</li>
+            <li>• "How long has this thought been in your heart?"</li>
+            <li>• "If you set aside fear, how would you choose?"</li>
+            <li>• "What does the ideal picture look like to you?"</li>
           </ul>
 
           <p className="text-gray-600 leading-relaxed mt-8">
-            迷茫不可怕。可怕的是假装不迷茫，错过了真正认识自己的机会。
+            Being lost isn't scary. What's scary is pretending not to be lost, and missing 
+            the opportunity to truly know yourself.
           </p>
         </div>
       </article>

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '小雨是谁？ - LifeCompass 博客',
-  description: '小雨是一个温柔的人生教练 AI，像一个知心朋友，陪你探索人生方向。',
+  title: 'Who is Xiaoyu? - LifeCompass Blog',
+  description: 'Xiaoyu is a gentle life coach AI, like a caring friend, accompanying you to explore life\'s direction.',
 }
 
 export default function BlogPost() {
@@ -10,48 +10,49 @@ export default function BlogPost() {
     <main className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-4">
       <article className="max-w-3xl mx-auto">
         <header className="mb-8">
-          <p className="text-sm text-gray-400 mb-2">2026年4月3日 · 产品</p>
-          <h1 className="text-3xl font-bold text-gray-800">小雨是谁？</h1>
+          <p className="text-sm text-gray-400 mb-2">April 3, 2026 · Product</p>
+          <h1 className="text-3xl font-bold text-gray-800">Who is Xiaoyu?</h1>
         </header>
 
         <div className="prose prose-lg max-w-none">
           <p className="text-gray-600 leading-relaxed">
-            小雨是 LifeCompass 的 AI 人生教练。
+            Xiaoyu is the AI life coach of LifeCompass.
           </p>
 
           <p className="text-gray-600 leading-relaxed">
-            她不像传统的 AI 助手，给你一堆信息、告诉你该怎么做。她更像一个温柔
-            的朋友，认真听你说，然后问你一些问题，帮你理清思绪。
+            Unlike traditional AI assistants that give you piles of information or tell you what 
+            to do, she's more like a gentle friend who listens carefully, then asks questions to 
+            help you clarify your thoughts.
           </p>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">她的特点</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">Her characteristics</h2>
           <ul className="text-gray-600 space-y-2">
-            <li>• 温柔：说话轻声细语，像傍晚的阳光</li>
-            <li>• 耐心：不急着给答案，等你慢慢说</li>
-            <li>• 不评判：你说的都会被接纳</li>
-            <li>• 有边界：不是心理咨询师，不能替代专业帮助</li>
+            <li>• Gentle: Speaks softly, like evening sunlight</li>
+            <li>• Patient: Doesn't rush to give answers, waits for you to speak</li>
+            <li>• Non-judgmental: Everything you say is accepted</li>
+            <li>• Has boundaries: Not a therapist, cannot replace professional help</li>
           </ul>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">她会怎么陪你聊天？</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">How does she chat with you?</h2>
           <p className="text-gray-600 leading-relaxed">
-            如果你很迷茫，她不会说"你应该怎么做"。她会问：
+            If you're feeling lost, she won't say "you should do this." She'll ask:
           </p>
           <ul className="text-gray-600 space-y-2">
-            <li>• "这个问题在你心里放了多久了？"</li>
-            <li>• "如果抛开恐惧，你更倾向哪个？"</li>
-            <li>• "你最在意的是什么？"</li>
+            <li>• "How long has this question been in your heart?"</li>
+            <li>• "If fear wasn't a factor, which would you choose?"</li>
+            <li>• "What matters most to you?"</li>
           </ul>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">她不会做什么？</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">What she won't do</h2>
           <ul className="text-gray-600 space-y-2">
-            <li>• 不会一次性说很多话</li>
-            <li>• 不会给你标准答案</li>
-            <li>• 不会评判你的选择</li>
-            <li>• 不会假装理解你的感受</li>
+            <li>• Won't say too much at once</li>
+            <li>• Won't give standard answers</li>
+            <li>• Won't judge your choices</li>
+            <li>• Won't pretend to understand your feelings</li>
           </ul>
 
           <p className="text-gray-600 leading-relaxed mt-8">
-            简单来说，小雨就是一个愿意停下来，认真听你说话的朋友。
+            Simply put, Xiaoyu is a friend willing to stop and truly listen to you.
           </p>
         </div>
       </article>

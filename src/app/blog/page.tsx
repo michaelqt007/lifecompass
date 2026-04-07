@@ -2,45 +2,45 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: '博客 - LifeCompass',
-  description: '关于人生、成长、选择的思考，和小雨一起探索内心的答案。',
+  title: 'Blog - LifeCompass',
+  description: 'Thoughts on life, growth, and choices. Explore your inner answers with Xiaoyu.',
 }
 
 const posts = [
   {
     slug: 'what-is-life-compass',
-    title: 'LifeCompass 是什么？',
-    excerpt: '一个用 AI 共创的人生操作系统，从自用开始，公开进化，吸引同频者共建。',
+    title: 'What is LifeCompass?',
+    excerpt: 'An AI-powered life operating system, starting for personal use, evolving publicly, attracting like-minded people to build together.',
     date: '2026-04-03',
-    category: '产品',
+    category: 'Product',
   },
   {
     slug: 'who-is-xiaoyu',
-    title: '小雨是谁？',
-    excerpt: '小雨是一个温柔的人生教练 AI，像一个知心朋友，陪你探索人生方向。',
+    title: 'Who is Xiaoyu?',
+    excerpt: 'Xiaoyu is a gentle life coach AI, like a caring friend, accompanying you to explore life\'s direction.',
     date: '2026-04-03',
-    category: '产品',
+    category: 'Product',
   },
   {
     slug: 'how-to-find-direction',
-    title: '迷茫的时候怎么办？',
-    excerpt: '当你不知道自己想要什么时，小雨会通过提问帮你理清思绪，而不是直接给答案。',
+    title: 'What to Do When You Feel Lost',
+    excerpt: 'When you don\'t know what you want, Xiaoyu helps you clarify your thoughts through questions, not by giving direct answers.',
     date: '2026-04-03',
-    category: '成长',
+    category: 'Growth',
   },
   {
     slug: 'art-of-listening',
-    title: '倾听的力量',
-    excerpt: '有时候我们不需要答案，只需要有人认真听我们说话。小雨就是这样一位倾听者。',
+    title: 'The Power of Listening',
+    excerpt: 'Sometimes we don\'t need answers. We just need someone to truly listen. Xiaoyu is that listener.',
     date: '2026-04-02',
-    category: '思考',
+    category: 'Thoughts',
   },
   {
     slug: 'small-steps',
-    title: '小步前进：如何迈出第一步',
-    excerpt: '改变不需要一次完成。只要迈出一小步，就已经在路上了。',
+    title: 'Small Steps Forward: How to Take the First Step',
+    excerpt: 'Change doesn\'t have to happen all at once. Just taking one small step means you\'re already on the way.',
     date: '2026-04-01',
-    category: '成长',
+    category: 'Growth',
   },
 ]
 
@@ -48,8 +48,8 @@ export default function BlogPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-4">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">博客</h1>
-        <p className="text-gray-500 mb-8">关于人生、成长、选择的思考</p>
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">Blog</h1>
+        <p className="text-gray-500 mb-8">Thoughts on life, growth, and choices</p>
 
         <div className="space-y-6">
           {posts.map((post) => (

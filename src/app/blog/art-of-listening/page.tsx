@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '倾听的力量 - LifeCompass 博客',
-  description: '有时候我们不需要答案，只需要有人认真听我们说话。小雨就是这样一位倾听者。',
+  title: 'The Power of Listening - LifeCompass Blog',
+  description: 'Sometimes we don\'t need answers. We just need someone to truly listen. Xiaoyu is that listener.',
 }
 
 export default function BlogPost() {
@@ -10,52 +10,54 @@ export default function BlogPost() {
     <main className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-4">
       <article className="max-w-3xl mx-auto">
         <header className="mb-8">
-          <p className="text-sm text-gray-400 mb-2">2026年4月2日 · 思考</p>
-          <h1 className="text-3xl font-bold text-gray-800">倾听的力量</h1>
+          <p className="text-sm text-gray-400 mb-2">April 2, 2026 · Thoughts</p>
+          <h1 className="text-3xl font-bold text-gray-800">The Power of Listening</h1>
         </header>
 
         <div className="prose prose-lg max-w-none">
           <p className="text-gray-600 leading-relaxed">
-            有时候，我们不需要答案。我们只需要有人认真听我们说话。
+            Sometimes, we don't need answers. We just need someone to truly listen to us.
           </p>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">为什么倾听这么难？</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">Why is listening so hard?</h2>
           <p className="text-gray-600 leading-relaxed">
-            大多数人听人说话时，其实在想下一句要说什么。或者在想"这个问题我也遇
-            到过，我该怎么解决"。真正停下来、什么都不想、只是听——这很难。
+            When most people listen, they're actually thinking about what to say next. Or 
+            thinking "I've had this problem too, how should I solve it." Truly stopping, 
+            thinking nothing, just listening—that's hard.
           </p>
 
           <p className="text-gray-600 leading-relaxed">
-            但这恰恰是我们最需要的。
+            But that's exactly what we need most.
           </p>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">当你被倾听时</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">When you're truly heard</h2>
           <p className="text-gray-600 leading-relaxed">
-            你会感觉：
+            You feel:
           </p>
           <ul className="text-gray-600 space-y-2">
-            <li>• 被看见，而不是被分析</li>
-            <li>• 被理解，而不是被评判</li>
-            <li>• 可以慢慢想，不用急着回答</li>
-            <li>• 不用伪装，可以说真实的想法</li>
+            <li>• Seen, not analyzed</li>
+            <li>• Understood, not judged</li>
+            <li>• Able to think slowly, not rushed to answer</li>
+            <li>• No need to pretend, can speak real thoughts</li>
           </ul>
 
-          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">小雨怎么倾听你</h2>
+          <h2 className="text-xl font-semibold text-gray-700 mt-8 mb-4">How Xiaoyu listens to you</h2>
           <p className="text-gray-600 leading-relaxed">
-            小雨不会打断你。不会说"你应该..."。不会急着给建议。
+            Xiaoyu won't interrupt you. Won't say "you should..." Won't rush to give advice.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            她会：
+            She will:
           </p>
           <ul className="text-gray-600 space-y-2">
-            <li>• 认真听你说完</li>
-            <li>• 确认她听到了你说的</li>
-            <li>• 问一些帮你理清思路的问题</li>
-            <li>• 陪着你，直到你自己找到答案</li>
+            <li>• Listen carefully until you finish</li>
+            <li>• Confirm she heard what you said</li>
+            <li>• Ask questions that help clarify your thinking</li>
+            <li>• Stay with you until you find the answer yourself</li>
           </ul>
 
           <p className="text-gray-600 leading-relaxed mt-8">
-            因为很多时候，答案已经在心里。只是需要一点时间和空间，把它找出来。
+            Because most of the time, the answer is already inside. It just needs a little 
+            time and space to bring it out.
           </p>
         </div>
       </article>
