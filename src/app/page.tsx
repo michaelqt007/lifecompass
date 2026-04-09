@@ -59,51 +59,15 @@ export default function Home() {
 
     recognition.onstart = () => {
       setIsRecording(true)
-      console.log('=== onstart 触发 ===')
-      alert('onstart 触发')
 
-      // 如果 5 秒内没有 onresult，显示兼容性警告
       resultTimeout = setTimeout(() => {
         setShowCompatWarning(true)
       }, 5000)
     }
 
-    recognition.onaudiostart = () => {
-      console.log('=== onaudiostart 触发 ===')
-      alert('onaudiostart 触发 - 音频捕获开始')
-    }
-
-    recognition.onsoundstart = () => {
-      console.log('=== onsoundstart 触发 ===')
-      alert('onsoundstart 触发 - 检测到声音')
-    }
-
-    recognition.onspeechstart = () => {
-      console.log('=== onspeechstart 触发 ===')
-      alert('onspeechstart 触发 - 检测到语音')
-    }
-
-    recognition.onspeechend = () => {
-      console.log('=== onspeechend 触发 ===')
-      alert('onspeechend 触发 - 语音结束')
-    }
-
-    recognition.onsoundend = () => {
-      console.log('=== onsoundend 触发 ===')
-      alert('onsoundend 触发 - 声音结束')
-    }
-
-    recognition.onaudioend = () => {
-      console.log('=== onaudioend 触发 ===')
-      alert('onaudioend 触发 - 音频捕获结束')
-    }
-
     recognition.onresult = (event: any) => {
       clearTimeouts()
       setShowCompatWarning(false)
-
-      // 调试信息
-      alert(`onresult 触发！results.length=${event.results.length}, resultIndex=${event.resultIndex}`)
 
       let text = ''
 
@@ -114,8 +78,6 @@ export default function Home() {
       }
 
       const transcript = text.trim()
-      alert(`transcript="${transcript}"`)
-      
       if (!transcript) return
 
       setInput(transcript)
@@ -132,9 +94,8 @@ export default function Home() {
     recognition.onend = () => {
       clearTimeouts()
       setIsRecording(false)
-      // 释放音频流
       if ((recognition as any)._audioStream) {
-        (recognition as any)._audioStream.getTracks().forEach((track: any) => track.stop())
+        ;(recognition as any)._audioStream.getTracks().forEach((track: any) => track.stop())
       }
     }
 
@@ -142,17 +103,12 @@ export default function Home() {
       clearTimeouts()
       setIsRecording(false)
 
-      // aborted 是正常的中止，不需要弹窗
-      if (event?.error === 'aborted') {
-        return
-      }
+      if (event?.error === 'aborted') return
 
       if (event?.error === 'not-allowed') {
         alert('需要麦克风权限，请在浏览器设置中允许')
       } else if (event?.error === 'audio-capture') {
         alert('无法访问麦克风，请检查设备权限')
-      } else if (event?.error === 'no-speech') {
-        // no-speech 不弹窗
       }
     }
   }
@@ -229,18 +185,10 @@ export default function Home() {
   const toggleRecording = async () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
 
-    // 检查浏览器类型
-    const ua = navigator.userAgent
-    const isXiaomi = ua.includes('MiuiBrowser') || ua.includes('XiaoMi')
-    const isBaidu = ua.includes('Baidu') || ua.includes('baiduboxapp')
-    alert(`浏览器检测：${isXiaomi ? '小米浏览器' : isBaidu ? '百度浏览器' : '其他浏览器'}`)
-
     if (!SpeechRecognition) {
-      alert('您的浏览器不支持语音输入，请使用 Chrome 浏览器')
+      alert('当前浏览器不支持直接语音识别，下一步会切到录音上传识别方案')
       return
     }
-
-    alert(`SpeechRecognition 类型：${SpeechRecognition.name || 'unknown'}`)
 
     if (isRecording) {
       setShowCompatWarning(false)
@@ -249,15 +197,11 @@ export default function Home() {
       return
     }
 
-    // 先获取麦克风权限，保持音频流
     let audioStream: MediaStream | null = null
     try {
-      alert('正在获取麦克风权限...')
       audioStream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      alert('✅ 麦克风访问成功！音频轨道数：' + audioStream.getAudioTracks().length)
-      // 不停止音频流，保持活跃状态
-    } catch (e: any) {
-      alert('❌ 麦克风访问失败：' + e.message)
+    } catch {
+      alert('无法访问麦克风，请检查设备权限')
       return
     }
 
@@ -286,14 +230,14 @@ export default function Home() {
       recognition.continuous = false
       recognition.interimResults = true
       recognition.lang = 'zh-CN'
-      ;(recognition as any)._audioStream = audioStream // 关联音频流
+      ;(recognition as any)._audioStream = audioStream
       bindRecognitionEvents(recognition)
       recognitionRef.current = recognition
     } catch {
-      alert('语音识别初始化失败')
       if (audioStream) {
-        audioStream.getTracks().forEach(track => track.stop())
+        audioStream.getTracks().forEach((track) => track.stop())
       }
+      alert('语音识别初始化失败')
       return
     }
 
