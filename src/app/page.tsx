@@ -20,9 +20,12 @@ export default function Home() {
   const [isRecording, setIsRecording] = useState(false)
   const [isVoiceMode, setIsVoiceMode] = useState(true)
   const [showCompatWarning, setShowCompatWarning] = useState(false)
+  const [voiceError, setVoiceError] = useState('')
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const recognitionRef = useRef<any>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const recordedChunksRef = useRef<Blob[]>([])
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const scrollToBottom = () => {
@@ -59,6 +62,7 @@ export default function Home() {
 
     recognition.onstart = () => {
       setIsRecording(true)
+      setVoiceError('')
 
       resultTimeout = setTimeout(() => {
         setShowCompatWarning(true)
@@ -106,9 +110,9 @@ export default function Home() {
       if (event?.error === 'aborted') return
 
       if (event?.error === 'not-allowed') {
-        alert('需要麦克风权限，请在浏览器设置中允许')
+        setVoiceError('需要麦克风权限，请在浏览器设置中允许')
       } else if (event?.error === 'audio-capture') {
-        alert('无法访问麦克风，请检查设备权限')
+        setVoiceError('无法访问麦克风，请检查设备权限')
       }
     }
   }
@@ -182,26 +186,86 @@ export default function Home() {
     }
   }
 
+  const uploadRecordedAudio = async (audioBlob: Blob) => {
+    const formData = new FormData()
+    formData.append('file', audioBlob, 'recording.webm')
+
+    const response = await fetch('/api/speech-to-text', {
+      method: 'POST',
+      body: formData,
+    })
+
+    const data = await response.json()
+    if (!response.ok) {
+      throw new Error(data?.detail || data?.error || '语音识别失败')
+    }
+
+    const transcript = String(data?.transcript || '').trim()
+    if (!transcript) {
+      throw new Error('没有识别到语音内容')
+    }
+
+    setInput(transcript)
+    requestAnimationFrame(() => {
+      const el = textareaRef.current
+      if (!el) return
+      el.value = transcript
+      autoResizeTextarea()
+      el.focus()
+    })
+  }
+
+  const startMediaRecorderFallback = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+      ? 'audio/webm;codecs=opus'
+      : 'audio/webm'
+
+    recordedChunksRef.current = []
+    const mediaRecorder = new MediaRecorder(stream, { mimeType })
+    mediaRecorderRef.current = mediaRecorder
+
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) recordedChunksRef.current.push(event.data)
+    }
+
+    mediaRecorder.onstop = async () => {
+      setIsRecording(false)
+      stream.getTracks().forEach((track) => track.stop())
+
+      const audioBlob = new Blob(recordedChunksRef.current, { type: mimeType })
+      recordedChunksRef.current = []
+
+      if (!audioBlob.size) {
+        setVoiceError('没有录到有效音频，请重试')
+        return
+      }
+
+      try {
+        await uploadRecordedAudio(audioBlob)
+        setVoiceError('')
+      } catch (error: any) {
+        setVoiceError(error?.message || '语音识别失败，请重试')
+      }
+    }
+
+    mediaRecorder.start()
+    setIsRecording(true)
+    setVoiceError('')
+  }
+
   const toggleRecording = async () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
 
-    if (!SpeechRecognition) {
-      alert('当前浏览器不支持直接语音识别，下一步会切到录音上传识别方案')
-      return
-    }
-
     if (isRecording) {
       setShowCompatWarning(false)
-      recognitionRef.current?.stop()
-      setIsRecording(false)
-      return
-    }
 
-    let audioStream: MediaStream | null = null
-    try {
-      audioStream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    } catch {
-      alert('无法访问麦克风，请检查设备权限')
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop()
+      } else {
+        recognitionRef.current?.stop()
+        setIsRecording(false)
+      }
       return
     }
 
@@ -211,12 +275,33 @@ export default function Home() {
           name: 'microphone' as PermissionName,
         })
         if (permissionStatus.state === 'denied') {
-          alert('麦克风权限被拒绝，请在浏览器设置中允许麦克风访问')
+          setVoiceError('麦克风权限被拒绝，请在浏览器设置中允许麦克风访问')
           return
         }
       }
     } catch {
       // ignore
+    }
+
+    const ua = navigator.userAgent
+    const isKnownBadSpeechBrowser =
+      ua.includes('MiuiBrowser') || ua.includes('XiaoMi') || ua.includes('baiduboxapp') || ua.includes('Baidu')
+
+    if (!SpeechRecognition || isKnownBadSpeechBrowser) {
+      try {
+        await startMediaRecorderFallback()
+      } catch {
+        setVoiceError('无法访问麦克风，请检查设备权限')
+      }
+      return
+    }
+
+    let audioStream: MediaStream | null = null
+    try {
+      audioStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    } catch {
+      setVoiceError('无法访问麦克风，请检查设备权限')
+      return
     }
 
     try {
@@ -237,7 +322,11 @@ export default function Home() {
       if (audioStream) {
         audioStream.getTracks().forEach((track) => track.stop())
       }
-      alert('语音识别初始化失败')
+      try {
+        await startMediaRecorderFallback()
+      } catch {
+        setVoiceError('语音识别初始化失败，且录音模式启动失败')
+      }
       return
     }
 
@@ -249,7 +338,7 @@ export default function Home() {
         recognitionRef.current?.start()
       } catch {
         setIsRecording(false)
-        alert('语音识别启动失败')
+        setVoiceError('语音识别启动失败，建议改用录音上传识别')
       }
     }, 300)
   }
@@ -328,8 +417,11 @@ export default function Home() {
               </p>
               {showCompatWarning && (
                 <p className="text-xs text-red-500 mt-2 font-medium">
-                  ⚠️ 当前浏览器可能不支持完整语音识别，建议使用 Chrome 浏览器或改用文字输入
+                  ⚠️ 当前浏览器语音识别兼容性较差，系统会优先切到录音识别方案
                 </p>
+              )}
+              {voiceError && (
+                <p className="text-xs text-red-500 mt-2 font-medium">{voiceError}</p>
               )}
             </div>
           )}
