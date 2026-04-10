@@ -245,7 +245,7 @@ export default function Home() {
         await uploadRecordedAudio(audioBlob)
         setVoiceError('')
       } catch (error: any) {
-        setVoiceError(error?.message || '语音识别失败，请重试')
+        setVoiceError(error?.message || '当前环境还没有可用的语音识别服务配置')
       }
     }
 
@@ -417,7 +417,7 @@ export default function Home() {
               </p>
               {showCompatWarning && (
                 <p className="text-xs text-red-500 mt-2 font-medium">
-                  ⚠️ 当前浏览器语音识别兼容性较差，系统会优先切到录音识别方案
+                  ⚠️ 当前浏览器语音识别兼容性较差，但服务器端 ASR 还未配置完成，暂时请先使用文字输入
                 </p>
               )}
               {voiceError && (

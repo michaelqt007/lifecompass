@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
 
+const ASR_NOT_CONFIGURED_MESSAGE = '当前环境还没有可用的语音识别服务配置，请先补齐 ASR key 或接入可用转写服务。'
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
@@ -11,46 +13,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'missing audio file' }, { status: 400 })
     }
 
-    const apiKey = process.env.DASHSCOPE_API_KEY
-    if (!apiKey) {
-      return NextResponse.json({ error: 'missing DASHSCOPE_API_KEY' }, { status: 500 })
-    }
-
-    const upstreamForm = new FormData()
-    upstreamForm.append('file', file, file.name || 'recording.webm')
-    upstreamForm.append('model', 'paraformer-realtime-v2')
-
-    const response = await fetch('https://dashscope.aliyuncs.com/api/v1/services/audio/asr/transcription', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
+    return NextResponse.json(
+      {
+        error: 'asr_not_configured',
+        detail: ASR_NOT_CONFIGURED_MESSAGE,
       },
-      body: upstreamForm,
-    })
-
-    const text = await response.text()
-
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: 'asr upstream failed', detail: text },
-        { status: response.status },
-      )
-    }
-
-    let transcript = ''
-    try {
-      const data = JSON.parse(text)
-      transcript =
-        data?.output?.text ||
-        data?.data?.result ||
-        data?.result?.text ||
-        data?.text ||
-        ''
-    } catch {
-      transcript = text
-    }
-
-    return NextResponse.json({ transcript: String(transcript || '').trim() })
+      { status: 503 },
+    )
   } catch (error: any) {
     return NextResponse.json(
       { error: 'speech to text failed', detail: error?.message || 'unknown error' },
