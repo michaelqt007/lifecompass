@@ -120,7 +120,10 @@
    - 尚未确认线上环境变量是否与文档完全一致
 
 2. 线上站点冒烟测试
-   - 尚未对当前线上域名进行完整交互复核
+   - 已对公开站点 `https://lifecompass-phi.vercel.app` 完成基础冒烟测试
+   - 首页可正常打开
+   - `/api/speech-to-text` 在上传文件时按预期返回 `asr_not_configured`
+   - `/api/chat` 当前返回兜底文案 `抱歉，我刚才走神了...`，说明线上文本对话链路仍存在配置或上游问题，尚未完成最终闭环
 
 3. ASR 正式接入
    - 当前 `/api/speech-to-text` 仍是“未接入”的占位实现
@@ -226,15 +229,23 @@ npm run dev
 - 查看 `git diff`
 - 确认无误后提交一个文档类 commit
 
-### P2：核验线上 Vercel
+### P2：修复线上文本对话链路
 
 目标：
-- 确认线上部署仍对应当前仓库与当前变量口径
+- 让公开站点的 `/api/chat` 不再返回兜底文案
+
+当前已知现象：
+- 公开站点首页可打开
+- 公开站点 `/api/chat` 当前返回 `{"reply":"抱歉，我刚才走神了..."}`
+- 本地 `/api/chat` 复测结果相同
+- 直接请求 DashScope 上游确认返回 `401 invalid_api_key`
+- 当前最高优先级 blocker 已明确：需要替换失效的 `DASHSCOPE_API_KEY`
 
 重点检查：
-- 项目是否绑定 `michaelqt007/lifecompass`
-- 环境变量是否为 `DASHSCOPE_API_KEY`
-- 当前线上页面是否可正常文本对话
+- 本地 `.env.local` 中的 `DASHSCOPE_API_KEY` 是否已替换为新 key
+- Vercel 环境变量是否同步更新为新的 `DASHSCOPE_API_KEY`
+- 部署使用的代码是否已包含当前文档和接口口径
+- 新 key 更新后重新执行 `/api/chat` 冒烟测试
 
 ### P3：补环境文档
 

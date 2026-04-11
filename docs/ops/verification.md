@@ -145,6 +145,10 @@ curl -s http://localhost:3000/api/chat \
 3. 当前机器是否能访问 DashScope 上游
 4. 上游接口是否超时
 
+补充说明：
+- 本项目在 2026-04-11 的实测中，已确认存在过一次 `401 invalid_api_key`
+- 因此如果再次出现兜底文案，应优先怀疑 DashScope key 已失效或过期，而不是先怀疑前端页面
+
 ---
 
 ## 6. Speech-to-text API 验收
