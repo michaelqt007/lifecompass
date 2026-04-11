@@ -123,7 +123,7 @@
    - 已对公开站点 `https://lifecompass-phi.vercel.app` 完成基础冒烟测试
    - 首页可正常打开
    - `/api/speech-to-text` 在上传文件时按预期返回 `asr_not_configured`
-   - `/api/chat` 当前返回兜底文案 `抱歉，我刚才走神了...`，说明线上文本对话链路仍存在配置或上游问题，尚未完成最终闭环
+   - 线上 `/api/chat` 目前仍是旧版本行为，尚未切到本次本地修复后的 DeepSeek 兼容实现
 
 3. ASR 正式接入
    - 当前 `/api/speech-to-text` 仍是“未接入”的占位实现
@@ -229,23 +229,22 @@ npm run dev
 - 查看 `git diff`
 - 确认无误后提交一个文档类 commit
 
-### P2：修复线上文本对话链路
+### P2：发布本次 DeepSeek 兼容修复到线上
 
 目标：
-- 让公开站点的 `/api/chat` 不再返回兜底文案
+- 让公开站点使用本次已在本地验证通过的 DeepSeek / DashScope 双兼容实现
 
 当前已知现象：
 - 公开站点首页可打开
-- 公开站点 `/api/chat` 当前返回 `{"reply":"抱歉，我刚才走神了..."}`
-- 本地 `/api/chat` 复测结果相同
-- 直接请求 DashScope 上游确认返回 `401 invalid_api_key`
-- 当前最高优先级 blocker 已明确：需要替换失效的 `DASHSCOPE_API_KEY`
+- 公开站点 `/api/chat` 当前仍返回旧兜底文案
+- 本地已切换到 `DEEPSEEK_API_KEY` 并验证 `/api/chat` 恢复正常
+- 本地 `npm run build` 已通过
 
 重点检查：
-- 本地 `.env.local` 中的 `DASHSCOPE_API_KEY` 是否已替换为新 key
-- Vercel 环境变量是否同步更新为新的 `DASHSCOPE_API_KEY`
-- 部署使用的代码是否已包含当前文档和接口口径
-- 新 key 更新后重新执行 `/api/chat` 冒烟测试
+- 线上部署是否已经包含最新 commit
+- Vercel 环境变量是否已配置 `DEEPSEEK_API_KEY`
+- 如果线上仍沿用旧版本，触发一次重新部署
+- 部署完成后重新执行线上 `/api/chat` 冒烟测试
 
 ### P3：补环境文档
 

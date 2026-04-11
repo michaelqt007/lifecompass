@@ -27,9 +27,11 @@ npm install
 cp .env.example .env.local
 ```
 
-编辑 `.env.local`，填入你的 DashScope API Key：
+编辑 `.env.local`，填入你的模型服务 API Key（优先支持 DeepSeek，也兼容 DashScope）：
 
 ```
+DEEPSEEK_API_KEY=***
+# 或
 DASHSCOPE_API_KEY=***
 ```
 
@@ -55,7 +57,7 @@ npm i -g vercel
 vercel
 ```
 
-3. 在 Vercel 控制台配置环境变量 `DASHSCOPE_API_KEY`
+3. 在 Vercel 控制台配置环境变量 `DEEPSEEK_API_KEY`（或 `DASHSCOPE_API_KEY`）
 
 ## 🎤 功能特性
 
@@ -70,7 +72,7 @@ vercel
 - **前端**：Next.js 14 + React 18
 - **样式**：Tailwind CSS
 - **语音**：Web Speech API（浏览器原生）
-- **AI**：DashScope Coding API（`glm-5`，可替换）
+- **AI**：DeepSeek Chat（优先）/ DashScope Coding API（兼容）
 - **部署**：Vercel
 
 ## 📝 开发说明

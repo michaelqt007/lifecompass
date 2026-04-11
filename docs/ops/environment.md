@@ -8,16 +8,19 @@
 
 ## 2. 当前核心结论
 
-截至 2026-04-11，LifeCompass 的文本对话链路依赖：
+截至 2026-04-11，LifeCompass 的文本对话链路已支持双上游：
 
-- 环境变量：`DASHSCOPE_API_KEY`
-- 上游接口：`https://coding.dashscope.aliyuncs.com/v1/chat/completions`
-- 模型：`glm-5`
+- 优先环境变量：`DEEPSEEK_API_KEY`
+- 备用环境变量：`DASHSCOPE_API_KEY`
+- DeepSeek 上游：`https://api.deepseek.com/v1/chat/completions`
+- DashScope 上游：`https://coding.dashscope.aliyuncs.com/v1/chat/completions`
+- DeepSeek 默认模型：`deepseek-chat`
+- DashScope 默认模型：`glm-5`
 
-当前已确认的 blocker：
-- 本地 `.env.local` 中存在 `DASHSCOPE_API_KEY`
-- 但直接请求 DashScope 上游返回 `401 invalid_api_key`
-- 因此当前文本对话失败的首要原因不是前端页面，而是 key 已失效、过期或不可用
+当前状态：
+- 本地已切换为 `DEEPSEEK_API_KEY`
+- 本地 `/api/chat` 已验证恢复正常
+- DashScope 旧 key 之前确实返回过 `401 invalid_api_key`，但它已不再是当前主链路 blocker
 
 ---
 
@@ -53,16 +56,28 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api/chat
 
 ## 4. 当前变量说明
 
+### `DEEPSEEK_API_KEY`
+
+用途：
+- 供 `src/app/api/chat/route.ts` 优先调用 DeepSeek Chat API
+
+是否必填：
+- 否（但如果提供，会优先使用）
+
+缺失或失效时的表现：
+- 系统会退回尝试 `DASHSCOPE_API_KEY`
+- 如果两者都不可用，`/api/chat` 会返回兜底文案
+
 ### `DASHSCOPE_API_KEY`
 
 用途：
-- 供 `src/app/api/chat/route.ts` 调用 DashScope Coding API
+- 供 `src/app/api/chat/route.ts` 在未配置 DeepSeek 时调用 DashScope Coding API
 
 是否必填：
-- 是
+- 否（作为备用上游）
 
 缺失或失效时的表现：
-- `/api/chat` 返回兜底文案：`抱歉，我刚才走神了...`
+- 当 `DEEPSEEK_API_KEY` 也不存在时，`/api/chat` 返回兜底文案
 - 上游可能返回：`401 invalid_api_key`
 
 ### `NEXT_PUBLIC_API_URL`
@@ -89,7 +104,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api/chat
   - `error: "asr_not_configured"`
 
 这不是当前最高优先级 blocker。
-当前最高优先级 blocker 是文本对话所依赖的 `DASHSCOPE_API_KEY` 已失效。
+当前服务端 ASR 仍未接入，但文本对话主链路已经可以通过 `DEEPSEEK_API_KEY` 正常工作。
 
 ---
 
@@ -152,8 +167,9 @@ curl -s https://lifecompass-phi.vercel.app/api/chat \
 当前不建议继续优先排查前端页面逻辑。
 
 当前最有效的下一步是：
-- 立刻更换新的 `DASHSCOPE_API_KEY`
-- 本地验证通过后再同步到 Vercel
+- 将本次 DeepSeek 兼容修复部署到线上
+- 在 Vercel 配置 `DEEPSEEK_API_KEY`
+- 部署后再次验证线上 `/api/chat`
 
 ---
 

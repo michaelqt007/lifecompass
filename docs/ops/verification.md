@@ -20,9 +20,10 @@
 - Node 运行命令：`npm run dev` / `npm run build` / `npm run start`
 - Chat API：`/api/chat`
 - Speech-to-text API：`/api/speech-to-text`
-- 大模型环境变量：`DASHSCOPE_API_KEY`
-- Chat API 默认模型：`glm-5`
-- Chat API 默认上游：`https://coding.dashscope.aliyuncs.com/v1/chat/completions`
+- 大模型环境变量：优先 `DEEPSEEK_API_KEY`，兼容 `DASHSCOPE_API_KEY`
+- DeepSeek 默认模型：`deepseek-chat`
+- DashScope 默认模型：`glm-5`
+- Chat API 默认上游：优先 `https://api.deepseek.com/v1/chat/completions`，兼容 `https://coding.dashscope.aliyuncs.com/v1/chat/completions`
 - 语音转写接口当前状态：未接入真实 ASR，返回 `asr_not_configured` 属于预期行为
 
 ---
@@ -36,7 +37,9 @@
 3. `.env.local` 已存在，且至少包含：
 
 ```bash
-DASHSCOPE_API_KEY=你的真实 Key
+DEEPSEEK_API_KEY=***
+# 或
+DASHSCOPE_API_KEY=***
 ```
 
 可选变量：
@@ -46,7 +49,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api/chat
 ```
 
 说明：
-- 如果没有 `DASHSCOPE_API_KEY`，页面可能能打开，但文本对话不会正常接上模型
+- 如果没有 `DEEPSEEK_API_KEY` 或 `DASHSCOPE_API_KEY`，页面可能能打开，但文本对话不会正常接上模型
 - `NEXT_PUBLIC_API_URL` 没配时，默认走本地 API 路径
 
 ---

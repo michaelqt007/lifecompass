@@ -153,13 +153,19 @@ export async function POST(request: NextRequest) {
     
     console.log(`[💬 Chat API] 消息数量：${messages.length}`)
 
-    // 调用阿里云百炼 API（Coding Plan 专属地址）
-    const apiUrl = 'https://coding.dashscope.aliyuncs.com/v1/chat/completions'
+    // 兼容多上游：优先 DeepSeek，其次 DashScope
+    const hasDeepSeek = Boolean(process.env.DEEPSEEK_API_KEY)
+    const apiUrl = hasDeepSeek
+      ? 'https://api.deepseek.com/v1/chat/completions'
+      : 'https://coding.dashscope.aliyuncs.com/v1/chat/completions'
     console.log(`[💬 Chat API] 请求 URL: ${apiUrl}`)
     
-    // 使用 glm-5 模型（智谱，速度快，深度思考）
+    const model = hasDeepSeek
+      ? (process.env.DEEPSEEK_MODEL || 'deepseek-chat')
+      : 'glm-5'
+
     const requestBody = {
-      model: 'glm-5',
+      model,
       messages: messages,
       max_tokens: 500,
       temperature: 0.7,
@@ -171,11 +177,13 @@ export async function POST(request: NextRequest) {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 30000) // 30秒超时
 
+    const apiKey = hasDeepSeek ? process.env.DEEPSEEK_API_KEY : process.env.DASHSCOPE_API_KEY
+
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.DASHSCOPE_API_KEY}`,
+        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify(requestBody),
       signal: controller.signal,
