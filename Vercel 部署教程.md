@@ -18,7 +18,7 @@
 在项目根目录执行：
 
 ```bash
-cd /root/.openclaw/workspace/lifecompass-web
+cd /root/.openclaw.pre-migration/workspace/lifecompass/web
 
 # 初始化 Git
 git init
@@ -50,7 +50,7 @@ git push -u origin main
 ### 2.2 导入项目
 
 1. 点击 **Add New...** → **Project**
-2. 找到 `lifecompass-web` 仓库
+2. 找到 `lifecompass` 仓库
 3. 点击 **Import**
 
 ### 2.3 配置环境变量
@@ -62,7 +62,7 @@ git push -u origin main
 
 | Name | Value |
 |------|-------|
-| `DASHSCOPE_API_KEY` | `sk-sp-49372a696a224344b1bc46c8a7e9e419` |
+| `DASHSCOPE_API_KEY` | `你的真实 API Key` |
 
 3. 点击 **Save**
 
@@ -79,7 +79,7 @@ git push -u origin main
 部署完成后，你会得到一个链接：
 
 ```
-https://lifecompass-web-xxx.vercel.app
+https://lifecompass-xxx.vercel.app
 ```
 
 **这个链接：**
@@ -150,4 +150,4 @@ A: Vercel 会邮件通知，免费版限制内随便用
 
 ---
 
-**需要我帮你上传到 GitHub 吗？** 🚀
+**如果代码已经在 GitHub，就直接导入 Vercel 即可。** 🚀

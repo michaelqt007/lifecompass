@@ -47,7 +47,7 @@
 
 **方法 A：直接创建 .env.local 文件**
 
-在项目根目录创建文件：`/root/.openclaw/workspace/lifecompass-web/.env.local`
+在项目根目录创建文件：`/root/.openclaw.pre-migration/workspace/lifecompass/web/.env.local`
 
 内容：
 ```
@@ -57,7 +57,7 @@ DASHSCOPE_API_KEY=sk-你的 Key 粘贴在这里
 **方法 B：命令行创建**
 
 ```bash
-cd /root/.openclaw/workspace/lifecompass-web
+cd /root/.openclaw.pre-migration/workspace/lifecompass/web
 echo "DASHSCOPE_API_KEY=sk-你的 Key 粘贴在这里" > .env.local
 ```
 

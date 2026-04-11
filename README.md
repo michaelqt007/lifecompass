@@ -27,10 +27,10 @@ npm install
 cp .env.example .env.local
 ```
 
-编辑 `.env.local`，填入你的大模型 API Key：
+编辑 `.env.local`，填入你的 DashScope API Key：
 
 ```
-OPENAI_API_KEY=your_api_key_here
+DASHSCOPE_API_KEY=***
 ```
 
 ### 3. 启动开发服务器
@@ -55,7 +55,7 @@ npm i -g vercel
 vercel
 ```
 
-3. 在 Vercel 控制台配置环境变量 `OPENAI_API_KEY`
+3. 在 Vercel 控制台配置环境变量 `DASHSCOPE_API_KEY`
 
 ## 🎤 功能特性
 
@@ -70,7 +70,7 @@ vercel
 - **前端**：Next.js 14 + React 18
 - **样式**：Tailwind CSS
 - **语音**：Web Speech API（浏览器原生）
-- **AI**：OpenAI GPT-4（可替换）
+- **AI**：DashScope Coding API（`glm-5`，可替换）
 - **部署**：Vercel
 
 ## 📝 开发说明
@@ -81,7 +81,11 @@ vercel
 
 ### 更换大模型服务
 
-在 `src/app/api/chat/route.ts` 中修改 API 调用逻辑
+当前默认使用阿里云百炼 Coding API（`glm-5`）。如需更换模型服务，请同步修改：
+
+- `src/app/api/chat/route.ts` 中的请求地址
+- 环境变量说明（`README.md` / `.env.example`）
+- 部署平台中的对应环境变量
 
 ### 自定义 UI
 
