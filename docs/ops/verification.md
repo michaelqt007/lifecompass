@@ -24,7 +24,7 @@
 - DeepSeek 默认模型：`deepseek-chat`
 - DashScope 默认模型：`glm-5`
 - Chat API 默认上游：优先 `https://api.deepseek.com/v1/chat/completions`，兼容 `https://coding.dashscope.aliyuncs.com/v1/chat/completions`
-- 语音转写接口当前状态：未接入真实 ASR，返回 `asr_not_configured` 属于预期行为
+- 语音转写接口当前状态：已支持 OpenAI Whisper；未配置 `OPENAI_API_KEY` 时返回 `asr_not_configured` 属于预期行为
 
 ---
 
@@ -159,30 +159,27 @@ curl -s http://localhost:3000/api/chat \
 
 ### 6.1 当前预期行为
 
-当前版本中，`/api/speech-to-text` 尚未接入真实 ASR 服务。
+当前版本中，`/api/speech-to-text` 已支持 OpenAI Whisper ASR。
 因此：
-- 传入合法音频文件
-- 返回 `503`
-- 响应体包含 `asr_not_configured`
+- 如果配置了 `OPENAI_API_KEY`，传入合法音频文件后应返回 `200` 和 `transcript`
+- 如果没有配置 `OPENAI_API_KEY`，返回 `503`，响应体包含 `asr_not_configured`
 
-这属于“当前版本预期行为”，不是回归缺陷。
+未配置 ASR key 时返回 `asr_not_configured` 属于预期行为；前端会自动切回文字输入。
 
 ### 6.2 测试方式
 
 如果需要验证该接口当前状态，可使用任意音频文件上传。
 
 预期结果：
-- HTTP 状态：`503`
-- JSON 包含：
-  - `error: "asr_not_configured"`
-  - `detail` 提示当前环境未配置语音识别服务
+- 已配置 `OPENAI_API_KEY`：HTTP 200，JSON 包含 `transcript`
+- 未配置 `OPENAI_API_KEY`：HTTP 503，JSON 包含 `error: "asr_not_configured"`
 
 ### 6.3 什么情况算异常
 
 以下情况才算异常：
 - 无文件上传时没有返回 400
 - 上传文件后返回非 JSON 且无明确错误说明
-- 代码已经接入 ASR，但文档仍写“未接入”
+- 已配置 `OPENAI_API_KEY` 但仍返回 `asr_not_configured`
 
 ---
 

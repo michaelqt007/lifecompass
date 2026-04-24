@@ -55,6 +55,10 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api/chat
 可选备用：
 - `DASHSCOPE_API_KEY`
 
+手机网页端语音输入兜底链路建议配置：
+- `OPENAI_API_KEY`
+- `OPENAI_TRANSCRIBE_MODEL`（可选，默认 `whisper-1`）
+
 ---
 
 ## 4. 当前变量说明
@@ -94,20 +98,32 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api/chat
 未配置时：
 - 默认走本地相对路径
 
+### `OPENAI_API_KEY`
+
+用途：
+- 供 `src/app/api/speech-to-text/route.ts` 调用 OpenAI Whisper，把手机端录音转成文字
+
+是否必填：
+- 否，但如果手机浏览器不支持 Web Speech API，缺少该变量会导致服务端语音转写不可用
+
+缺失时的表现：
+- `/api/speech-to-text` 返回 `asr_not_configured`
+- 前端会提示并自动切回文字输入，不再让用户卡在不可用的语音模式
+
 ---
 
 ## 5. 当前未启用的服务端能力
 
 ### ASR / 语音转写
 
-当前服务端 `/api/speech-to-text` 仍未接入真实 ASR 服务。
+当前服务端 `/api/speech-to-text` 已支持 OpenAI Whisper ASR，但需要配置 `OPENAI_API_KEY`。
 
 当前预期行为：
-- 上传文件后返回：
+- 已配置 `OPENAI_API_KEY`：上传文件后返回 `transcript`
+- 未配置 `OPENAI_API_KEY`：上传文件后返回：
   - `error: "asr_not_configured"`
 
-这不是当前最高优先级 blocker。
-当前服务端 ASR 仍未接入，但文本对话主链路已经可以通过 `DEEPSEEK_API_KEY` 正常工作。
+文本对话主链路仍然通过 `DEEPSEEK_API_KEY` 工作；语音转写和文本对话是两条独立配置。
 
 ---
 

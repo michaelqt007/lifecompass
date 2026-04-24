@@ -245,7 +245,12 @@ export default function Home() {
         await uploadRecordedAudio(audioBlob)
         setVoiceError('')
       } catch (error: any) {
-        setVoiceError(error?.message || '当前环境还没有可用的语音识别服务配置')
+        const message = error?.message || '当前环境还没有可用的语音识别服务配置'
+        setVoiceError(message)
+        if (message.includes('语音识别服务配置') || message.includes('asr_not_configured')) {
+          setIsVoiceMode(false)
+          requestAnimationFrame(() => textareaRef.current?.focus())
+        }
       }
     }
 
@@ -292,6 +297,7 @@ export default function Home() {
         await startMediaRecorderFallback()
       } catch {
         setVoiceError('无法访问麦克风，请检查设备权限')
+        setIsVoiceMode(false)
       }
       return
     }

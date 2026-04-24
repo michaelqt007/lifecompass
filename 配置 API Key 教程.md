@@ -84,6 +84,21 @@ DEEPSEEK_API_KEY=你的 DeepSeek API Key
 
 ---
 
+## 手机网页端语音输入配置
+
+手机浏览器的语音识别兼容性不稳定。LifeCompass 现在支持一条服务端兜底链路：手机端录音后上传到 `/api/speech-to-text`，再由 OpenAI Whisper 转文字。
+
+如需让不支持 Web Speech API 的手机浏览器也能语音输入，请额外配置：
+
+```bash
+OPENAI_API_KEY=你的 OpenAI API Key
+OPENAI_TRANSCRIBE_MODEL=whisper-1
+```
+
+如果暂时不配置 `OPENAI_API_KEY`，系统不会卡死在语音模式，会自动切回文字输入。
+
+---
+
 ## DashScope 备用链路
 
 只有在你明确要使用阿里云 DashScope/Coding API 时，才配置：
@@ -111,4 +126,4 @@ A: 不要。`.env.local` 应该保留在本地或部署平台环境变量里。
 
 ### Q: 手机端语音输入还是不工作，是 API Key 问题吗？
 
-A: 不一定。文本对话用 `DEEPSEEK_API_KEY`，语音转文字接口 `/api/speech-to-text` 目前还没有接入真实 ASR 服务。
+A: 文本对话用 `DEEPSEEK_API_KEY`；手机端录音转文字用 `OPENAI_API_KEY`。如果没有配置 `OPENAI_API_KEY`，不支持 Web Speech API 的浏览器会自动切回文字输入。
