@@ -62,7 +62,9 @@ git push -u origin main
 
 | Name | Value |
 |------|-------|
-| `DASHSCOPE_API_KEY` | `你的真实 API Key` |
+| `DEEPSEEK_API_KEY` | `你的 DeepSeek API Key` |
+
+可选备用：如果你还要保留阿里云 DashScope 兼容链路，再额外配置 `DASHSCOPE_API_KEY`。当前线上主链路不需要把 DeepSeek key 填到 `DASHSCOPE_API_KEY`。
 
 3. 点击 **Save**
 
@@ -130,6 +132,10 @@ A: 查看 Vercel 的 **Deployments** → **View Build Logs** 找错误
 ### Q: API Key 安全吗？
 
 A: 安全！Vercel 的环境变量不会泄露到前端代码
+
+### Q: 应该填 DeepSeek 还是 DashScope？
+
+A: 当前优先填 `DEEPSEEK_API_KEY`。不要把 DeepSeek 的 key 填进 `DASHSCOPE_API_KEY`，否则代码回退到阿里云链路时会 401。
 
 ### Q: 如何更新代码？
 

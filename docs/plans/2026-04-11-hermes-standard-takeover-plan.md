@@ -6,7 +6,7 @@
 
 **Architecture:** 采用“资产盘点 → 配置归一 → 本地验收 → 部署验收 → 切换接管权”的标准方案。先保留 OpenClaw 归档数据作为只读证据源，再以 GitHub 仓库 `michaelqt007/lifecompass` 和当前可构建代码作为新的主线，最后把运行、配置、文档、后续入口统一到 Hermes。
 
-**Tech Stack:** Next.js 14, React 18, Tailwind CSS, Vercel, DashScope Coding API (`glm-5`), Hermes Agent, GitHub
+**Tech Stack:** Next.js 14, React 18, Tailwind CSS, Vercel, DeepSeek Chat（优先）, DashScope Coding API（备用）, Hermes Agent, GitHub
 
 ---
 
@@ -17,9 +17,10 @@
 3. 该目录是 git 仓库，远端为：`https://github.com/michaelqt007/lifecompass.git`
 4. 远端仓库可访问，`main` 分支存在
 5. 本地 `npm run build` 已成功，说明项目当前可被接管、可构建
-6. 当前发现一个配置/文档不一致：
-   - `README.md` 仍写 `OPENAI_API_KEY`
-   - `.env.example` 和 `src/app/api/chat/route.ts` 实际使用 `DASHSCOPE_API_KEY`
+6. 当前配置口径已统一为：
+   - `DEEPSEEK_API_KEY` 优先
+   - `DASHSCOPE_API_KEY` 备用兼容
+   - 不再把 DeepSeek key 填入 `DASHSCOPE_API_KEY`
 7. `src/app/api/speech-to-text/route.ts` 当前明确返回 `asr_not_configured`，说明语音输入尚未真正接入服务端 ASR
 
 ---
@@ -121,7 +122,8 @@ Hermes 接管后，应满足以下 6 个标准：
 - 部署平台：Vercel
 
 **Step 2: 记录配置面资产**
-- 关键变量：`DASHSCOPE_API_KEY`
+- 关键变量：`DEEPSEEK_API_KEY`
+- 备用变量：`DASHSCOPE_API_KEY`
 - 可选变量：`NEXT_PUBLIC_API_URL`
 - 待定义：是否需要 TTS / ASR 供应商变量
 
@@ -147,11 +149,12 @@ Hermes 接管后，应满足以下 6 个标准：
 - Optional create: `docs/ops/environment.md`
 
 **Step 1: 修正文档变量名**
-- 把 README 中的 `OPENAI_API_KEY` 改成实际使用的 `DASHSCOPE_API_KEY`
-- 若后续决定改回 OpenAI SDK，再同步改代码，不允许文档和代码长期分叉
+- 把公开文档统一为 `DEEPSEEK_API_KEY` 优先、`DASHSCOPE_API_KEY` 备用
+- 若后续更换供应商，必须同步更新代码、`.env.example`、README 与运维文档，不允许长期分叉
 
 **Step 2: 明确变量分层**
-- 必填：`DASHSCOPE_API_KEY`
+- 必填：`DEEPSEEK_API_KEY`
+- 备用：`DASHSCOPE_API_KEY`
 - 可选：`NEXT_PUBLIC_API_URL`
 - 未启用：ASR/TTS 相关变量（如没有，就在文档里写“暂未接入”）
 
@@ -161,7 +164,7 @@ Hermes 接管后，应满足以下 6 个标准：
 - 不把真实密钥写入仓库
 
 **Step 4: 增加故障提示映射**
-- Chat 接口失败 → 检查 `DASHSCOPE_API_KEY`
+- Chat 接口失败 → 优先检查 `DEEPSEEK_API_KEY`，再检查备用 `DASHSCOPE_API_KEY`
 - Speech-to-text 返回 `asr_not_configured` → 属于预期状态，不算线上异常
 
 **Verification:**
@@ -219,7 +222,8 @@ Expected:
 - Read/Modify: `Vercel 部署教程.md`
 
 **Step 1: 核查 Vercel 环境变量**
-- `DASHSCOPE_API_KEY` 是否已配置
+- `DEEPSEEK_API_KEY` 是否已配置
+- 如使用备用链路，`DASHSCOPE_API_KEY` 是否已配置
 - 是否存在过期或误导性的 `OPENAI_API_KEY` 说明
 
 **Step 2: 核查线上域名**
@@ -268,7 +272,7 @@ Expected:
 
 按标准方案，建议先只做这 4 件事：
 
-1. 修 README，把 `OPENAI_API_KEY` 改为 `DASHSCOPE_API_KEY`
+1. 修 README / `.env.example` / 部署文档，把主链路统一为 `DEEPSEEK_API_KEY`
 2. 补一份 `docs/ops/verification.md`，固定 build / smoke test 步骤
 3. 补一份 `docs/ops/hermes-handover.md`，明确 Hermes 已接管哪些内容
 4. 复核 Vercel 项目变量与线上站点是否仍对应当前仓库

@@ -143,14 +143,15 @@ curl -s http://localhost:3000/api/chat \
 - `网络好像不太好，能再说一遍吗？`
 
 优先检查：
-1. `DASHSCOPE_API_KEY` 是否存在
-2. Key 是否可用
-3. 当前机器是否能访问 DashScope 上游
-4. 上游接口是否超时
+1. `DEEPSEEK_API_KEY` 是否存在
+2. DeepSeek Key 是否可用
+3. 如果没有 DeepSeek，再检查备用的 `DASHSCOPE_API_KEY`
+4. 当前机器是否能访问对应上游（DeepSeek 或 DashScope）
+5. 上游接口是否超时
 
 补充说明：
-- 本项目在 2026-04-11 的实测中，已确认存在过一次 `401 invalid_api_key`
-- 因此如果再次出现兜底文案，应优先怀疑 DashScope key 已失效或过期，而不是先怀疑前端页面
+- 本项目在 2026-04-11 的实测中，已确认存在过一次 provider/key 不匹配导致的 `401 invalid_api_key`
+- 因此如果再次出现兜底文案，应优先确认 key 属于当前实际调用的上游，而不是先怀疑前端页面
 
 ---
 
@@ -193,7 +194,7 @@ curl -s http://localhost:3000/api/chat \
 - [ ] `npm run build` 成功
 - [ ] 首页本地可打开
 - [ ] `/api/chat` 返回有效 `reply`
-- [ ] 已确认 `DASHSCOPE_API_KEY` 已配置到目标环境
+- [ ] 已确认 `DEEPSEEK_API_KEY` 已配置到目标环境
 - [ ] 已确认文档未再引用 `OPENAI_API_KEY`
 - [ ] 已确认若测试语音转写接口，当前返回 `asr_not_configured` 为预期行为
 
@@ -219,9 +220,10 @@ curl -s http://localhost:3000/api/chat \
 
 优先检查：
 - `.env.local` 是否存在
-- `DASHSCOPE_API_KEY` 是否填写正确
+- `DEEPSEEK_API_KEY` 是否填写正确
+- 如果使用备用链路，`DASHSCOPE_API_KEY` 是否填写正确
 - 开发服务器是否已重启
-- DashScope 上游是否可访问
+- 对应上游（DeepSeek 或 DashScope）是否可访问
 
 ### 症状 2：构建失败
 

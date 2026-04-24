@@ -1,123 +1,114 @@
-# 配置通义千问 API Key 教程
+# 配置 LifeCompass API Key 教程
 
-## 📋 步骤说明（5 分钟搞定）
+## 当前结论
 
-### 步骤 1：访问阿里云控制台
+LifeCompass 当前文本对话主链路优先使用 DeepSeek。
 
-打开链接：https://dashscope.console.aliyun.com/apiKey
+请优先配置：
 
----
-
-### 步骤 2：登录阿里云账号
-
-- 有淘宝/支付宝账号的直接登录
-- 没有的话注册一个（免费）
-
----
-
-### 步骤 3：实名认证（必须）
-
-如果是第一次用阿里云：
-1. 点击头像 → 实名认证
-2. 选择"个人实名认证"
-3. 用支付宝扫码认证（最快）
-
----
-
-### 步骤 4：创建 API Key
-
-1. 进入 API Key 管理页面
-2. 点击"创建新的 API Key"
-3. 给 Key 起个名字（比如：LifeCompass）
-4. 点击确定
-
----
-
-### 步骤 5：复制 API Key
-
-- 创建成功后会显示一串字符
-- 点击"复制"按钮
-- **⚠️ 只会出现一次，赶紧保存！**
-
-格式类似：`sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
-
----
-
-### 步骤 6：填入项目
-
-**方法 A：直接创建 .env.local 文件**
-
-在项目根目录创建文件：`/root/.openclaw.pre-migration/workspace/lifecompass/web/.env.local`
-
-内容：
-```
-DASHSCOPE_API_KEY=sk-你的 Key 粘贴在这里
+```bash
+DEEPSEEK_API_KEY=你的 DeepSeek API Key
 ```
 
-**方法 B：命令行创建**
+`DASHSCOPE_API_KEY` 只是备用兼容变量。不要把 DeepSeek key 填到 `DASHSCOPE_API_KEY`。
+
+---
+
+## 步骤 1：创建 DeepSeek API Key
+
+1. 打开：https://platform.deepseek.com/api_keys
+2. 登录 DeepSeek 开放平台账号
+3. 创建新的 API Key
+4. 复制保存。Key 只展示一次，请不要发到公开仓库
+
+---
+
+## 步骤 2：填入本地项目
+
+在项目根目录创建或编辑 `.env.local`：
+
+```bash
+DEEPSEEK_API_KEY=你的 DeepSeek API Key
+```
+
+可选：如果要指定模型，可增加：
+
+```bash
+DEEPSEEK_MODEL=deepseek-chat
+```
+
+命令行写入示例：
 
 ```bash
 cd /root/.openclaw.pre-migration/workspace/lifecompass/web
-echo "DASHSCOPE_API_KEY=sk-你的 Key 粘贴在这里" > .env.local
+printf 'DEEPSEEK_API_KEY=你的 DeepSeek API Key\n' > .env.local
 ```
 
 ---
 
-### 步骤 7：重启开发服务器
+## 步骤 3：重启开发服务器
 
 ```bash
-# 停止当前服务（Ctrl + C）
-
-# 重新启动
 npm run dev
 ```
 
----
-
-## ✅ 验证是否成功
-
-1. 手机浏览器访问：`http://10.4.0.15:3000`
-2. 输入一句话："你好，小雨"
-3. 如果小雨回复了，说明配置成功！🎉
+如果开发服务器已经在运行，先停止后重启，确保新的环境变量生效。
 
 ---
 
-## 💰 费用说明
+## 步骤 4：本地验证
 
-**新用户福利：**
-- 注册送 ¥20 免费额度
-- qwen-plus 模型：约 ¥0.002 / 1K tokens
+```bash
+curl -s http://127.0.0.1:3000/api/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"你好，小雨","conversationHistory":[]}'
+```
 
-**换算：**
-- 一次对话（10 轮）约 ¥0.05 - 0.1 元
-- ¥20 可以聊 200-400 次
-
-**查看用量：**
-https://dashscope.console.aliyun.com/usage
+通过标准：返回 JSON，包含 `reply`，且不再是兜底文案。
 
 ---
 
-## ⚠️ 常见问题
+## 步骤 5：Vercel 配置
+
+在 Vercel 项目中进入：
+
+Settings → Environment Variables
+
+添加：
+
+```bash
+DEEPSEEK_API_KEY=你的 DeepSeek API Key
+```
+
+保存后重新部署 Production。
+
+---
+
+## DashScope 备用链路
+
+只有在你明确要使用阿里云 DashScope/Coding API 时，才配置：
+
+```bash
+DASHSCOPE_API_KEY=你的 DashScope API Key
+```
+
+DashScope key 获取地址：
+https://dashscope.console.aliyun.com/apiKey
+
+注意：DeepSeek key 和 DashScope key 不能混用。
+
+---
+
+## 常见问题
 
 ### Q: API Key 泄露了怎么办？
-A: 在控制台删除这个 Key，重新创建一个
 
-### Q: 额度用完了怎么办？
-A: 在控制台充值（最少 ¥10）
+A: 立刻在对应平台删除这个 Key，重新创建一个。
 
-### Q: 如何设置消费上限？
-A: 控制台 → 费用中心 → 设置预算告警
+### Q: `.env.local` 要上传到 Git 吗？
 
-### Q: .env.local 文件要上传到 Git 吗？
-A: **千万不要！** 已经加到 .gitignore 了
+A: 不要。`.env.local` 应该保留在本地或部署平台环境变量里。
 
----
+### Q: 手机端语音输入还是不工作，是 API Key 问题吗？
 
-## 🎯 下一步
-
-配置好后：
-1. 自己先测试几轮对话
-2. 找 2-3 个朋友测试
-3. 收集反馈
-
-**开始改变人生的对话吧！** 🌧
+A: 不一定。文本对话用 `DEEPSEEK_API_KEY`，语音转文字接口 `/api/speech-to-text` 目前还没有接入真实 ASR 服务。

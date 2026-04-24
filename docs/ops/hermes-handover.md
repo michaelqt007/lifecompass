@@ -31,8 +31,8 @@
    - `npm run build` 已通过
 
 5. 已完成配置口径归一
-   - 公开文档已从 `OPENAI_API_KEY` 统一为 `DASHSCOPE_API_KEY`
-   - AI 服务说明已对齐当前实现：DashScope Coding API + `glm-5`
+   - 公开文档已统一为 `DEEPSEEK_API_KEY` 优先，`DASHSCOPE_API_KEY` 备用
+   - AI 服务说明已对齐当前实现：DeepSeek Chat 优先，DashScope Coding API 兼容
 
 6. 已完成验收流程固化
    - 已新增 `docs/ops/verification.md`
@@ -123,13 +123,13 @@
    - 已对公开站点 `https://lifecompass-phi.vercel.app` 完成基础冒烟测试
    - 首页可正常打开
    - `/api/speech-to-text` 在上传文件时按预期返回 `asr_not_configured`
-   - 线上 `/api/chat` 目前仍是旧版本行为，尚未切到本次本地修复后的 DeepSeek 兼容实现
+   - 线上 `/api/chat` 已验证可返回有效小雨回复；若后续再次异常，优先检查 `DEEPSEEK_API_KEY` 与部署版本
 
 3. ASR 正式接入
    - 当前 `/api/speech-to-text` 仍是“未接入”的占位实现
 
 4. 代码提交与 PR 整理
-   - 当前文档改动尚未提交到 git
+   - 当前接管文档已进入 git 工作区，后续按小步提交维护
 
 5. 正式迁入新的 Hermes 工作区
    - 目前项目仍位于 `.openclaw.pre-migration` 路径下

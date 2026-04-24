@@ -34,7 +34,7 @@
 至少需要：
 
 ```bash
-DASHSCOPE_API_KEY=你的真实 Key
+DEEPSEEK_API_KEY=*** Key
 ```
 
 可选：
@@ -50,6 +50,9 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api/chat
 - Environment Variables
 
 至少需要配置：
+- `DEEPSEEK_API_KEY`
+
+可选备用：
 - `DASHSCOPE_API_KEY`
 
 ---
@@ -112,11 +115,11 @@ NEXT_PUBLIC_API_URL=http://localhost:3000/api/chat
 
 当需要修复当前聊天链路时，建议按这个顺序操作：
 
-1. 获取新的 DashScope API Key
+1. 获取新的 DeepSeek API Key
 2. 更新本地 `.env.local`
 3. 本地重启开发服务器
 4. 本地重新测试 `/api/chat`
-5. 再更新 Vercel 中的 `DASHSCOPE_API_KEY`
+5. 再更新 Vercel 中的 `DEEPSEEK_API_KEY`
 6. 重新部署或等待平台重新生效
 7. 对公开站点再次执行冒烟测试
 
